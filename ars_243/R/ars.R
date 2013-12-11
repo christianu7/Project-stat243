@@ -22,7 +22,8 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m=10, ev
   }
   check(abscissae)
   abscissae <- get_zi( abscissae )
-    
+  check(abscissae)
+  
   #####     Simulation     #####
   
   sim_values <- as.numeric(NULL)

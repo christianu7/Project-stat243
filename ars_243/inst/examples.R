@@ -1,7 +1,9 @@
 rm(list=ls())
 
-script.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/ars_243/R/"
-out.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/"
+if(F) {
+  script.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/Project-stat243/ars_243/R/"
+  out.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/"
+}
 
 setwd(script.dir)
 source("auxiliar_fun.R")
