@@ -175,3 +175,45 @@ S_inv <- function( x , abscissae ) {
   cdf_inf <- ( log( hp_T[j] * ( x * int_s( abscissae ) - int_bef ) + exp( u(x=z_i[j], abscissae) ) )  - h_T[j] )/hp_T[j] + T_k[j]
   return(cdf_inf)
 }
+
+#The following function performs a non-parametric test (permutation test)
+#which tests for a difference in distributions. We will use it to test
+#for difference between the ARS sample distribution and the theoretical
+#distribution. The p-value returned is small if the distributions are 
+#not the same.
+permdiff = function(x,y,B){
+  k = mean(x) - mean(y)
+  P_Stat = numeric(B)
+  for (b in 1:B){
+    m = length(x)
+    z = c(x, y)
+    Ind = sample(length(z))
+    P_Stat[b] = mean(z[Ind[1:m]])-mean(z[Ind[-(1:m)]])
+  }
+  R = sum(P_Stat >= k)
+  p = R/(B + 1)
+  return(p)
+}
+
+#The following function samples from the desired distribution using 
+#the ARS algorithm and then samples from the distribution using random 
+#number generator functions in R. It performs a permutation test on
+#the two samples to check for the similarity between distributions.
+#It returns the two samples, the means of each sample and the p-value
+#from the permutation test.
+test <- function(B, f, init_val, l_f, u_f, rdensity, ...){ 
+  
+  samp_ars <- ars(B, f, init_val, l_f, u_f, ep = 1e-5)
+  samp_theo <- rdensity(B,...)
+  m_ars <- mean(samp_ars)
+  m_theo <- mean(samp_theo)
+  mean <- c(m_ars, m_theo)
+  names(mean) <- c("ARS Sample", "Theoretical Sample")
+  p <- permdiff(samp_ars, samp_theo, 2000)
+  ARS <- list(samp_ars, samp_theo, mean, p)
+  names(ARS) <- c("ARS Sample", "Theoretical Sample", "Means", "p-value")
+  par(mfrow = c(1, 2))
+  hist(samp_ars, breaks = B/10, main = "ARS Sample")
+  hist(samp_theo, breaks = B/10, main = "Theoretical Sample")
+  return(ARS)
+}
