@@ -36,6 +36,12 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m=10, ev
   while (length(sim_values)<B) {
   #while (iter<10) {
     iter <- iter + 1
+    
+    if(m=="exp") { m<-2^iter }
+    if(m=="lin") { m<-2*iter }
+    suppressWarnings( m <- as.numeric(m) )
+    if( is.na(m) ) {stop('"m" has to be either a number or any of "exp", or "lin"')}
+    
     # sampling uniform for rejection sampling
     w <- runif(m,0,1)
     
