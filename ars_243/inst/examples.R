@@ -13,6 +13,11 @@ source("ars.R")
 
 setwd(out.dir)
 
+if(F){
+  install.packages('VGAM')
+  require('VGAM')
+}
+
 B <- 1000
 ep=1e-5
 
@@ -164,4 +169,3 @@ if(F){
 
 
 
-  
