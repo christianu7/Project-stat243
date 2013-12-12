@@ -140,22 +140,38 @@ check.abscissae <-function(abscissae) {
 plot.abscissae <- function(abscissae, plot.h=F) {
   
   if (plot.h) {
-    h <- function(x) { eval(abscissae$h) }
-    f <- function(x){ exp(h(x)) }
+    f <- abscissae$f
+    h <- function(x){ log(f(x)) }
   }
   def.par <- par(no.readonly = TRUE) # save default, for resetting...
   par(mar=c(2,2,2,2))
   layout(matrix(c(1,1:3),2,2,byrow=T))
   
-  curve( l(x,abscissae), min(abscissae$T_k), max(abscissae$T_k), col="red", main="Upper and Lower functions" )
-  curve( u(x,abscissae), l_f+ep, u_f-ep, add=T, col="blue" )
-  if (plot.h) { curve( h(x), l_f, u_f, add=T) }
+  k <- length(abscissae$T_k)
   
-  curve( s(x,abscissae), l_f, u_f, col="blue", main="Sampling pdf" )
-  if (plot.h) { curve( f(x), l_f, u_f, add=T ) }
+  if(abscissae$z_i[1]!=-Inf) {limx1 <- abscissae$z_i[1]} else {limx1 <- abscissae$z_i[2]}
+  if(abscissae$z_i[k+1]!=Inf) {limx2 <- abscissae$z_i[k+1]} else {limx2 <- abscissae$z_i[k]}
   
-  curve( S(x,abscissae), l_f, u_f, col="blue", main="Sampling cdf")
+  curve( u(x,abscissae), limx1,limx2, col="red", main="Upper and Lower functions" )
+  curve( l(x,abscissae), abscissae$T_k[1], abscissae$T_k[k], col="blue", add=T )
+  if (plot.h) {
+    curve( h(x), limx1, limx2, add=T, col="black" )
+    legend("topright",legend=c("u(x)","h(x)","l(x)"),bty="n",col=c("red","black","blue"),bg="white",lty=1)
+  } else {
+    legend("topright",legend=c("u(x)","l(x)"),bty="n",col=c("red","blue"),bg="white",lty=1)
+  }
+
+  curve( s(x,abscissae), limx1, limx2, col="red", main="Sampling pdf" )
+  if (plot.h) {
+    curve( f(x), limx1, limx2, add=T, col="black" )
+    legend("topright",legend=c("s(x)","f(x)"),bty="n",col=c("red","black"),bg="white",lty=1)
+  } else {
+    legend("topright",legend=c("s(x)"),bty="n",col=c("red"),bg="white",lty=1)
+  }
+  
+  curve( S(x,abscissae), limx1, limx2, col="red", main="Sampling cdf")
   abline( v=abscissae$T_k, lty=2 )
+  legend("topright",legend=c("S(x)"),bty="n",col=c("red"),bg="white",lty=1)
   
   #curve( S_inv.abscissae( x , abscissae ) , 0.01, 0.99, main="Inverse cdf", col="blue")
   

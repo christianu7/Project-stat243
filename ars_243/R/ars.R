@@ -1,7 +1,7 @@
 
 #####     Adaptative rejecting sampling method     #####
 
-ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp", rej_evol.pdf=NULL, abs_evol.pdf=NULL ) {
+ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp", rej_evol.pdf=NULL, abs_evol.pdf=NULL, hist.pdf=NULL ) {
   # require(ars_243)
   # browser()
   if ( is.expression(f) ) {
@@ -18,11 +18,11 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
   if (is.null(init_abs)) {
     abscissae <- init_abs( h, l_h=l_f, u_h=u_f)
   } else {
-    abscissae <- as.abscissae( init_abs, f, l_h=l_f, u_h=u_f, eps=ep )
+    abscissae <- as.abscissae( init_abs, f, l_h=l_f, u_h=u_f, eps=eps )
   }
-  check(abscissae)
+  #check(abscissae)
   abscissae <- get_zi( abscissae )
-  check(abscissae)
+  #check(abscissae)
   
   #####     Simulation     #####
   
@@ -30,14 +30,15 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
   # Numbers of points tested on each iteration
   iter <- 0
   
+  def.par <- par(no.readonly = TRUE) # save default plot settings, for resetting...
+  dev_orig <- dev.list()
+    
   if( !is.null(rej_evol.pdf) ) {
-    def.par <- par(no.readonly = TRUE) # save default plot settings, for resetting...
     pdf(file=rej_evol.pdf,width=10, height=7, onefile=T)
     dev_rej <- dev.cur()
   }
   
   if( !is.null(abs_evol.pdf) ) {
-    def.par <- par(no.readonly = TRUE) # save default plot settings, for resetting...
     pdf(file=abs_evol.pdf,width=10, height=7, onefile=T)
     dev_abs <- dev.cur()
   }
@@ -52,6 +53,11 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
     suppressWarnings( m <- as.numeric(m) )
     if( is.na(m) ) {stop('"m" has to be either a number or any of "exp", or "lin"')}
     
+    if( !is.null(abs_evol.pdf) ) {
+      dev.set(dev_abs)
+      plot( abscissae, plot.h=T )
+    }
+    
     # sampling uniform for rejection sampling
     w <- runif(m,0,1)
     
@@ -65,7 +71,35 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
       if (any(accept_1)) {
         sim_values <- c(sim_values,x_star[accept_1])
       }
-    # rejection test
+    
+    # limits for graphics
+    k <- length(abscissae$T_k)
+    if(abscissae$z_i[1]!=-Inf) {limx1 <- abscissae$z_i[1]} else {limx1 <- abscissae$z_i[2]}
+    if(abscissae$z_i[k+1]!=Inf) {limx2 <- abscissae$z_i[k+1]} else {limx2 <- abscissae$z_i[k]}
+    
+    # Plot accepted points in phase 1
+    if( !is.null(rej_evol.pdf) ) {
+      dev.set(dev_rej)
+      layout(matrix(1:2))
+      par(mar=c(0,0,0,0)+2)
+      
+      curve(f(x),limx1,limx2,main="f(x) and s(x)",col="black")
+      curve(s(x,abscissae),limx1,limx2,col="red",add=T)
+      legend("topright",legend=c("s(x)","f(x)"),col=c("red","black"),bg="white",lty=1)
+      
+      curve( exp( h(x) - u(x,abscissae) ) ,
+             limx1, limx2, col="darkgreen", lty=1, main="Squeezing and Rejection areas", ylim=c(0,1), ylab="" )
+      curve( exp( l(x,abscissae) - u(x,abscissae)),
+             min(abscissae$T_k), max(abscissae$T_k), col="darkgreen", lty=2, add=T )
+      abline(v=abscissae$z_i,col="orange",lty=3)
+      points(x=x_star[accept_1],w[accept_1],col="green",pch=19)
+      legend("topleft",legend=c("phase 1","phase 2","rejected"),col=c("green","gold","red"),bg="white",pch=19)
+      legend("topright",legend=c("exp(h(x)-u(x))","exp(l(x)-u(x))","z_i"),col=c("darkgreen","darkgreen","orange"),bg="white",lty=c(1,2,3))
+    }
+
+    ### Testing sample ###
+    # (2) rejection test
+    
     if( any(!accept_1) ) {
       new_T_k <- x_star[!accept_1]
       new_h_T <-  h(new_T_k)
@@ -78,39 +112,32 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
 
       # Plot of accepted and rejected points in phase 1 or 2
       if( !is.null(rej_evol.pdf) ) {
-        dev.set(dev_rej)
-        layout(matrix(1:2))
-        par(mar=c(0,0,0,0)+2)
-        
-        curve(f(x),l_f,u_f,main="f(x) and s(x)")
-        curve(s(x,abscissae),l_f,u_f,col="blue",add=T)
-        
-        curve( exp( h(x) - u(x,abscissae) ) ,
-               l_f, u_f, col="darkgreen", lty=1, main="Squeezing and Rejection areas", ylim=c(0,1), ylab="" )
-        curve( exp( l(x,abscissae) - u(x,abscissae)),
-               min(abscissae$T_k), max(abscissae$T_k), col="darkgreen", lty=2, add=T )
-        abline(v=abscissae$z_i,col="orange")
-        points(x=x_star[accept_1],w[accept_1],col="green",pch=19)
         points(x=x_star[!accept_1][accept_2],w[!accept_1][accept_2],col="gold",pch=19)
         points(x=x_star[!accept_1][!accept_2],y=w[!accept_1][!accept_2],col="red",pch=19)
-      }
-      if( !is.null(rej_evol.pdf) ) {
-        dev.set(dev_rej)
-        plot( abscissae )
       }
       # Add to abscissae those point evaluated in h(x)
       abscissae <- add_points.abscissae( abscissae, new_T_k, new_h_T, new_hp_T )
       abscissae <- get_zi( abscissae )
-      check( abscissae )
+      #check( abscissae )
     }
     
   }
 
-  if( !is.null(evol.pdf) | !is.null(evol.pdf) ) {
-    par(def.par)  #- reset plot settings to default
-    dev.off()
+  sim_values <- sim_values[1:B]
+  
+  if( !is.null(rej_evol.pdf) ) {
+    dev.off(dev_rej)
+  }
+  if( !is.null(abs_evol.pdf) ) {
+    dev.off(dev_abs)
   }
   
-  return( sim_values[1:B] )
+  if( !is.null(hist.pdf) ) {
+    pdf(file=hist.pdf,width=10, height=7, onefile=T)
+    hist(sim_values,col="grey95",breaks=20)
+    dev.off()
+  }
+  suppressWarnings( par(def.par) ) # reset plot settings to default
   
+  return( sim_values )
 }
