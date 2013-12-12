@@ -179,7 +179,8 @@ ars( B, f ,l_f, u_f,
     init_abs=init_val,
     ep=1e-10,
     m="exp",
-    evol.pdf="test.pdf"
+    rej_evol.pdf= "rej.pdf"
+    abs_evol.pdf= "abs.pdf"
     )
   
 

@@ -1,7 +1,7 @@
 
 #####     Adaptative rejecting sampling method     #####
 
-ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp", evol.pdf=NULL ) {
+ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp", rej_evol.pdf=NULL, abs_evol.pdf=NULL ) {
   # require(ars_243)
   # browser()
   if ( is.expression(f) ) {
@@ -18,7 +18,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
   if (is.null(init_abs)) {
     abscissae <- init_abs( h, l_h=l_f, u_h=u_f)
   } else {
-    abscissae <- as.abscissae( init_abs, f, l_h=l_f, u_h=u_f, eps=eps )
+    abscissae <- as.abscissae( init_abs, f, l_h=l_f, u_h=u_f, eps=ep )
   }
   check(abscissae)
   abscissae <- get_zi( abscissae )
@@ -30,9 +30,16 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
   # Numbers of points tested on each iteration
   iter <- 0
   
-  if( !is.null(evol.pdf) ) {
+  if( !is.null(rej_evol.pdf) ) {
     def.par <- par(no.readonly = TRUE) # save default plot settings, for resetting...
-    pdf(file=evol.pdf,width=10, height=7, onefile=T)
+    pdf(file=rej_evol.pdf,width=10, height=7, onefile=T)
+    dev_rej <- dev.cur()
+  }
+  
+  if( !is.null(abs_evol.pdf) ) {
+    def.par <- par(no.readonly = TRUE) # save default plot settings, for resetting...
+    pdf(file=abs_evol.pdf,width=10, height=7, onefile=T)
+    dev_abs <- dev.cur()
   }
   
   m_orig <- m
@@ -50,24 +57,6 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
     
     # sampling from s(x)
     x_star <- S_inv( runif(m,0,1) , abscissae )
-    
-    # Plot of accepted and rejected points in phase 1 or 2
-    if( !is.null(evol.pdf) ) {
-      layout(matrix(1:2))
-      par(mar=c(0,0,0,0)+2)
-      
-      curve(f(x),l_f,u_f,main="f(x) and s(x)")
-      curve(s(x,abscissae),l_f,u_f,col="blue",add=T)
-      
-      curve( exp( h(x) - u(x,abscissae) ) ,
-            l_f, u_f, col="darkgreen", lty=1, main="Squeezing and Rejection areas", ylim=c(0,1), ylab="" )
-      curve( exp( l(x,abscissae) - u(x,abscissae)),
-            min(abscissae$T_k), max(abscissae$T_k), col="darkgreen", lty=2, add=T )
-      abline(v=abscissae$z_i,col="orange")
-      points(x=x_star,y=w,col="red",pch=19)
-      #points(x_star[accept_1],w[accept_1],col="green",pch=19)
-      #points(x_star[!accept_1][accept_2],w[!accept_1][accept_2],col="gold",pch=19)
-    }
     
     ### Testing sample ###
     # (1) squeezing test
@@ -87,6 +76,28 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
         sim_values <- c(sim_values,new_T_k[accept_2])
       }
 
+      # Plot of accepted and rejected points in phase 1 or 2
+      if( !is.null(rej_evol.pdf) ) {
+        dev.set(dev_rej)
+        layout(matrix(1:2))
+        par(mar=c(0,0,0,0)+2)
+        
+        curve(f(x),l_f,u_f,main="f(x) and s(x)")
+        curve(s(x,abscissae),l_f,u_f,col="blue",add=T)
+        
+        curve( exp( h(x) - u(x,abscissae) ) ,
+               l_f, u_f, col="darkgreen", lty=1, main="Squeezing and Rejection areas", ylim=c(0,1), ylab="" )
+        curve( exp( l(x,abscissae) - u(x,abscissae)),
+               min(abscissae$T_k), max(abscissae$T_k), col="darkgreen", lty=2, add=T )
+        abline(v=abscissae$z_i,col="orange")
+        points(x=x_star[accept_1],w[accept_1],col="green",pch=19)
+        points(x=x_star[!accept_1][accept_2],w[!accept_1][accept_2],col="gold",pch=19)
+        points(x=x_star[!accept_1][!accept_2],y=w[!accept_1][!accept_2],col="red",pch=19)
+      }
+      if( !is.null(rej_evol.pdf) ) {
+        dev.set(dev_rej)
+        plot( abscissae )
+      }
       # Add to abscissae those point evaluated in h(x)
       abscissae <- add_points.abscissae( abscissae, new_T_k, new_h_T, new_hp_T )
       abscissae <- get_zi( abscissae )
@@ -95,7 +106,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp",
     
   }
 
-  if( !is.null(evol.pdf) ) {
+  if( !is.null(evol.pdf) | !is.null(evol.pdf) ) {
     par(def.par)  #- reset plot settings to default
     dev.off()
   }
