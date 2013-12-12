@@ -16,29 +16,37 @@ get_zi.abscissae <- function(x) {
   return(x)
 }
 
-#check.abscissae is a method that takes as an input the abscissae at any 
-#iteration and checks that certain criterion are met.
-#The checks are the following:
-#Check 1: (error) x must have length greater than or equal to 2.
-#Check 2: (error) x must contain unique elements.
-#Check 3: (warning) The upper bound must be greater than the lower bound.
-#Check 4: (error) Values of x must be within the upper and lower bounds.
-#Check 5: (error) Values of x must have mass in f, or h will not be finite.
-#Check 6: (warning) Some values of x won't be used if h at that x is infinite,
-#         but Check 1 must still hold.
-#Check 7: (error) Where there is a global max on the domain of h, 
-#         there must be at least one point on either side of the max.
-#Check 8: (error) A naive check for concavity of h by checking derivates at bounds,
-#         where bounds are finite.
-#Check 9: (error) Verify z_i is not empty.
-#Check 10: (error) Verify dimensions of T_k and z_i are correct. z_i must 
-#          always have one more element the T_k.
+
 check <- function (x, ...) UseMethod("check")
 check.abscissae <-function(abscissae) {
+  #check.abscissae is a method that takes as an input the abscissae at any 
+  #iteration and checks that certain criterion are met.
+  #The checks are the following:
+  #Check 1: (error) x must have length greater than or equal to 2.
+  #Check 2: (error) x must contain unique elements.
+  #Check 3: (warning) The upper bound must be greater than the lower bound.
+  #Check 4: (error) Values of x must be within the upper and lower bounds.
+  
+  #Check 9: (error) Verify z_i is not empty.
+  #Check 10: (error) Verify dimensions of T_k and z_i are correct. z_i must 
+  #          always have one more element the T_k.
+  
+  #Check 5: (error) Values of x must have mass in f, or h will not be finite.
+  #Check 6: (warning) Some values of x won't be used if h at that x is infinite,
+  #         but Check 1 must still hold.
+  #Check 7: (error) Where there is a global max on the domain of h, 
+  #         there must be at least one point on either side of the max.
+  #Check 8: (error) A naive check for concavity of h by checking derivates at bounds,
+  #         where bounds are finite.
   
   T_k <- abscissae$T_k
   h_T <-  abscissae$h_T
   hp_T <- abscissae$hp_T
+  bound <- c(abscissae$l_h,abscissae$u_h)
+  
+  f <- abscissae$f
+  h <- function(x){ log(f(x)) }
+  ep <- 1e-3
   
   #Check 1
   if(length(T_k) < 2){stop("x must be a vector of length 2 or more")}
@@ -57,9 +65,15 @@ check.abscissae <-function(abscissae) {
     UB <- bound[order(bound)[2]]
   }
   else{LB <- bound[1]; UB <- bound[2]}
-  
+    
   #Check 4
   if(sum(T_k > UB) > 0 | sum(T_k < LB) > 0){stop("x's must be chosen between the prescribed bounds")}
+  
+  #Check 9
+  if(is.null(abscissae$z_i)){stop("z_i is not defined.")}
+  
+  #Check 10
+  if(length(abscissae$z_i) != length(abscissae$T_k) + 1){stop("The dimension of the z_i or T_k is incorrect.")}
   
   T_k <- T_k[which(is.infinite(h_T) == F)]
   h_T <- h_T[which(is.infinite(h_T) == F)]
@@ -69,7 +83,7 @@ check.abscissae <-function(abscissae) {
   if(length(T_k) < 2){stop("Please input different x such that f has more mass at x.")}
   
   #Check 6
-  if(length(T_k) != length(init_val)){warning("One or more of the intitial points weren't used.")}
+  # if(length(T_k) != length(init_val)){warning("One or more of the intitial points weren't used.")}
   
   k <- length(T_k)
   
@@ -84,7 +98,7 @@ check.abscissae <-function(abscissae) {
   if(!is.infinite(LB) && is.infinite(UB)){
     h_LB <- h(LB)
     if(!is.infinite(h_LB)){
-      hp_LB <- ( h(LB + ep) - h_LB ) / ep 
+      hp_LB <- ( h(LB + ep) - h_LB ) / ep
     }
     else{hp_LB <- 1}
     if(hp_LB > 0){
@@ -131,10 +145,7 @@ check.abscissae <-function(abscissae) {
     #Check 8
     if(hp_LB < 0 && hp_UB > 0){stop("f is not log concave!")}
   }
-  #Check 9  
-  if(length(abscissae$z_i == 0)){stop("The z_i is undefined.")}
-  #Check 10
-  if(length(abscissae$z_i) != length(abscissae$T_k) + 1){stop("The dimension of the z_i or T_k is incorrect.")}
+
 }
 
 plot.abscissae <- function(abscissae, plot.h=F) {

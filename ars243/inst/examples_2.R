@@ -1,14 +1,14 @@
-#rm(list=ls())
+rm(list=ls())
 
-#script.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/Project-stat243/ars_243/R/"
-#out.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/"
+script.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/Project-stat243/ars243/R/"
+out.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/"
 
-#setwd(script.dir)
-#source("auxiliar_fun.R")
-#source("abscissae_class.R")
-#source("abscissae_methods.R")
-#source("ars.R")
-#setwd(out.dir)
+setwd(script.dir)
+source("auxiliar_fun.R")
+source("abscissae_class.R")
+source("abscissae_methods.R")
+source("ars.R")
+setwd(out.dir)
 
 #####     EXAMPLES WITH DISTRIBUTIONS     #####
 
@@ -21,14 +21,28 @@ ars( B=1000,
      f=expression( (2*pi*sigma^2)^(-1/2) * exp(-(x-mu)^2/(2*sigma^2)) ),
      l_f=-Inf,
      u_f=Inf,
-     init_abs=seq(-10,10,5),
-     eps=1e-5,
+     init_abs=seq(0,6,1),
      m="exp",
      rej_evol.pdf= "rej_normal.pdf",
      abs_evol.pdf= "abs_normal.pdf",
      hist.pdf = "hist_normal.pdf"
 )
 
+# Truncated normal distribution
+set.seed(0)
+mu <- 5
+sigma <- 2
+ars( B=1000,
+     #f=function(x) {dnorm(x,mu,sigma)},
+     f=expression( (2*pi*sigma^2)^(-1/2) * exp(-(x-mu)^2/(2*sigma^2)) ),
+     l_f=-2,
+     u_f=7,
+     init_abs=seq(3,6,1),
+     m="exp",
+     rej_evol.pdf= "rej_normal_trunc.pdf",
+     abs_evol.pdf= "abs_normal_trunc.pdf",
+     hist.pdf = "hist_normal_trunc.pdf"
+)
 
 
 # Beta distribution
@@ -41,7 +55,6 @@ ars( B=1000,
      l_f=0,
      u_f=1,
      init_abs=seq(0.1,0.9,0.2),
-     eps=1e-5,
      m="exp",
      rej_evol.pdf= "rej_beta.pdf",
      abs_evol.pdf= "abs_beta.pdf",
@@ -58,7 +71,6 @@ ars( B=1000,
      l_f=0,
      u_f=Inf,
      init_abs=seq(1,5,1),
-     eps=1e-2,
      m="exp",
      rej_evol.pdf= "rej_exp.pdf",
      abs_evol.pdf= "abs_exp.pdf",
@@ -77,7 +89,6 @@ ars( B=1000,
      l_f=0,
      u_f=Inf,
      init_abs=seq(1,5,1),
-     eps=1e-5,
      m="exp",
      rej_evol.pdf= "rej_gamma.pdf",
      abs_evol.pdf= "abs_gamma.pdf",

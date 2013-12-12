@@ -1,7 +1,7 @@
 
 #####     Adaptative rejecting sampling method     #####
 
-ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp", rej_evol.pdf=NULL, abs_evol.pdf=NULL, hist.pdf=NULL ) {
+ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-4 , m="exp", rej_evol.pdf=NULL, abs_evol.pdf=NULL, hist.pdf=NULL ) {
   # require(ars_243)
   # browser()
   if ( is.expression(f) ) {
@@ -20,7 +20,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
   } else {
     abscissae <- as.abscissae( init_abs, f, l_h=l_f, u_h=u_f, eps=eps )
   }
-  check(abscissae)
+  #check(abscissae)
   abscissae <- get_zi( abscissae )
   check(abscissae)
   
@@ -47,7 +47,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
   while (length(sim_values)<B) {
   #while (iter<10) {
     iter <- iter + 1
-    print(iter)
+    #print(iter)
     
     if(m_orig=="exp") { m<-2^iter }
     if(m_orig=="lin") { m<-2*iter }

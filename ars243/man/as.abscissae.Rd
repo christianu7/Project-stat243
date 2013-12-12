@@ -7,9 +7,9 @@
 }
 \arguments{
   \item{x}{ vector of initial points }
-  \item{h}{ The function (call) being used for analysis }  
-  \item{l_h}{ The lower bound of the function}
-  \item{u_h}{ The upper bound of the function}
+  \item{f}{ The function (call) being used for analysis }  
+  \item{l_h}{ The lower bound of the function f}
+  \item{u_h}{ The upper bound of the function f}
   \item{ep}{ The differential between each point of x and its next evaluation for estimation of the derivative}
 }
 \details{
