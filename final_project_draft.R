@@ -67,7 +67,7 @@ if(F) {
   f <- function(x) { dexp(x, lambda)}
   l_f = 0
   u_f = Inf
-  init_val <- c(1.5, 2, 2.5, 3, 20)
+  init_val <- c(1.5, 2, 2.5, 3, 10, 20, 40)
   test_E <- test(10000, f, init_val, l_f, u_f, rexp, rate = lambda)
   test_E$Means
   test_E$`p-value`
@@ -121,9 +121,9 @@ if(T){
   l_f <- 1.0001
   u_f <- Inf
   init_val <- c(1.1, 1.2, 1.3, 1.5, 1.9, 2.5)
-  test_F <- test(10000, f, init_val, l_f, u_f, rpareto, location = a, shape = b)
-  test_F$Means
-  test_F$`p-value`
+  test_P <- test(10000, f, init_val, l_f, u_f, rpareto, location = a, shape = b)
+  test_P$Means
+  test_P$`p-value`
 }
 if(T){
   # F distribution
@@ -140,10 +140,10 @@ if(T){
 if(T){
   # 1/(x^5)
   f <- function(x){ x^(-5)}
-  l_f <- 1
-  u_f <- 75
+  l_f <- 0.01
+  u_f <- Inf
   init_val <- c(1.5, 2, 3)
-  test_poly <- ars(10000, f, x, l_f, u_f, ep = 1e-3)
+  test_poly <- ars(10000, f, init_val, l_f, u_f, ep = 1e-3)
   mean(test_poly)
   hist(test_poly, breaks = 75, main = "1/(x^5)")
 }
