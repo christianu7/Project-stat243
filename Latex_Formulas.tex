@@ -1,0 +1,90 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage[top=1in, bottom=1in, left=.25in, right=.5in]{geometry}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+\pagestyle{fancy}
+
+
+$\emph{h}(x) = \emph{log}(\emph{f}(x))$\\
+
+
+$\emph{h}'(x) = \frac{\emph{h}(x + \epsilon) - \emph{h}(x - \epsilon)}{2\epsilon}$, where the default value for $\epsilon$ is $1 \times 10^{-5}$. \\
+
+
+
+$z_{j} = \frac{\emph{h}(x_{j+1}) - \emph{h}(x_j) - x_{j+1}\emph{h}'(x_{j+1}) + x_{j}\emph{h}'(x_{j})}{\emph{h}'(x_{j}) - \emph{h}'(x_{j+1})}$\\
+
+
+
+For $x \in [z_{j-1}, z_{j}], \; \; j = 1, ..., k, \; \; \emph{u}_{k}(x) = \emph{h}(x_{j}) + (x - x_{j})\emph{h}'(x_{j})$, where $z_{0}$ is the lower bound of $\emph{D}$ (or $-\infty$ if $\emph{D}$ is not bounded below) and $z_{k}$ is the upper bound of $\emph{D}$ (or $+\infty$ if $\emph{D}$ is not bounded above).\\
+
+
+
+$\emph{s}_{k}(x) = \text{exp } \emph{u}_{k}(x)/\int_{\emph{D}} \text{exp } \emph{u}_{k}(x')dx'$. \\
+
+
+For $x \in [z_{j-1}, z_{j}]$, the CDF $S(x) = \frac{1}{R} \left(\sum_{i=1}^{j-1} \frac{1}{\emph{h}'(x_{i})}[e^{\emph{u}(z_{i})} - e^{\emph{u}(z_{i-1})}] + \frac{1}{\emph{h}'(x_{j})}[e^{\emph{u}(x)} - e^{\emph{u}(z_{j-1})}]\right)$, where \\$R = \sum_{i=1}^{k}\frac{1}{\emph{h}'(x_{i})}[e^{\emph{u}(z_{i})} - e^{\emph{u}(z_{i-1})}]$.\\
+
+
+For $x \in [z_{j-1}, z_{j}]$, the Inverse CDF $U(S) = \frac{\emph{log}[(SR - \sum_{i=1}^{j-1}\frac{1}{\emph{h}'(x_{i})}[e^{\emph{u}(z_{i})} - e^{\emph{u}(z_{i-1})}])\emph{h}'(x_{j}) + e^{\emph{u}(z_{j-1})}] - \emph{h}(x_{j})}{\emph{h}'(x_j)} + x_{j}$, where $R = \sum_{i=1}^{k}\frac{1}{\emph{h}'(x_{i})}[e^{\emph{u}(z_{i})} - e^{\emph{u}(z_{i-1})}]$.\\ 
+
+
+
+For $x \in [x_{j}, x_{j+1}], \; \; j = 1, ..., k-1 \; \; \emph{l}_{k}(x) = \frac{(x_{j+1} - x)\emph{h}(x_{j}) + (x - x_{j})\emph{h}(x_{j+1})}{x_{j+1} - x_{j}}$. For $x < x_{1}$ or $x > x_{k} \; \;  \emph{l}_{k}(x) = -\infty$. 
+
+
+
+\end{document}

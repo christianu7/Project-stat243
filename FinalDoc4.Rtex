@@ -1,0 +1,95 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage[latin1]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+\newcommand{\rinline}[1]{SOMETHING WRONG WITH knitr}%
+%% begin.rcode setup, include=FALSE
+% library(knitr)
+% opts_chunk$set(fig.path='figure/latex-', cache.path='cache/latex-')
+% options(replace.assign=TRUE,width=60)
+%% end.rcode
+
+
+\begin{document}
+
+\title{Adaptive Rejection Sampling -- STAT 243}
+\author{Brittney Benchoff, Christian Carmona, Hairong Xie, Tom McCann}
+
+\section{Description of Work}
+
+The group was given the task of implementing an adaptive rejection sampling algorithm to take user inputs and sample effectively, according to Gilks, et al, 1992.  Initial development of pseudo-code led to a relatively natural modular form.  Functions would be made to carry out individual tasks, and larger wrapper functions would encompass several of these individual functions in order to run a full simulation or run tests from a single command. 
+
+S3 object-oriented programming was used for the core functions to create a class with print and plot methods.  One plot method is used to create a panel of plots to show the functions of interest (i.e. user-input f(x), and function-defined s(x) and S(x).)  A second plot function is used to create a panel many plots to create a visualization of the ARS algorithm as it runs through the loop.  These plots portray the upper and lower bound functions as well as the accepted and rejected sampled points.  The print method is used to print the sampled values from a single call by the user.
+
+The function has initial tests to check that user-inputs are valid.  For example, the user can input either a function/call or an expression that can be coerced into a function/call, but if any other type of object is entered as an input, a warning message will be displayed and the algorithm will not continue.  Another check is placed at each iteration of the adaptive rejection sampling to ensure that the upper and lower bounds contain the entirety of the function h(x).  Additional testing was done to compare known functions, such as normal and gamma, to the outputs of the ARS code when run with a large number of samples.  
+
+[discuss functions here . . .]
+\section{Functions and flowchart}
+\tikzstyle{decision} = [rectangle, draw, fill=red!20, 
+    text width=11em, text badly centered, node distance=2cm, minimum height=4em]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=9em, text badly centered, rounded corners,node distance=2cm, minimum height=4em]
+\tikzstyle{blocksm} = [rectangle, draw, fill=blue!20, 
+    text width=4em, text badly centered, rounded corners,node distance=2cm, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=4cm,
+    minimum height=2em]
+\begin{tikzpicture}[node distance = 1.5cm, auto]
+    % Place nodes
+    \node [blocksm] (left1) {user input points};
+    \node [blocksm, right of=left1, node distance=3cm] (left2) {check validity};
+    \node [block, right of=left2, node distance=3.5cm] (init) {initial points};
+    \node [block, below of=init] (identify) {create $\emph{l}$ and $\emph{u}$ function};
+    \node [block, below of=identify] (evaluate1) {create $\emph{int}_{s}$ function as integral of $e^{u(x)}$ over $\emph{D}$};
+    \node [cloud, right of=evaluate1] (system) {bucket function};
+    \node [block, below of=evaluate1] (evaluate2) {create $\emph{S}=\emph{s}/\emph{int}_{s}$ as the sampling density};
+    \node [block, below of=evaluate2] (evaluate3) {create $\emph{S}_{inv}$ as inverse function of $\emph{S}$};
+    \node [block, below of=evaluate3, node distance=2.5cm] (evaluate4) {sample $U$ from $\emph{Unif}(0,1)$ and calculate candidate sampling point $x^{*}$ from $\emph{S}_{inv}(u)$};
+    \node [block, below of=evaluate4, node distance=2.5cm] (evaluate5) {generate $\emph{w}$ from $\emph{Unif}(0,1)$};
+    \node [blocksm, left of=evaluate3, node distance=5cm] (update) {update abscissae set};
+    \node [decision, below of=evaluate5] (decide) {\mbox{$\emph{w} \le \text{exp}\{\emph{l}(x^{*})-\emph{u}(x^{*})\}$}?};
+    \node [blocksm, left of=decide, node distance=4cm] (decide1) {calculate $\emph{h}(x^{*})$};
+    \node [decision, below of=decide1] (decide2) {\mbox{$\emph{w} \le \text{exp}\{\emph{h}(x^{*})-\emph{u}(x^{*})\}$}?};
+    \node [blocksm, below of=decide, node distance=2cm] (stop) {accept x\textsuperscript{*}};
+    % Draw edges
+    \path [line] ([yshift=-1ex]left1.east) -- ([yshift=-1ex]left2.west);
+    %\path [line] (left2) -- node {not valid} (left1);
+    %\path ([yshift=1ex]left2.west) edge ([yshift=1ex]left1.east);
+    \path [line] ([yshift=1ex]left2.west) -- node [above] {not valid} ([yshift=1ex]left1.east);
+    \path [line] (left2) -- (init);
+    \path [line] (init) -- (identify);
+    \path [line] (identify) -- (evaluate1);
+    \path [line] (evaluate1) -- (evaluate2);
+    \path [line] (evaluate2) -- (evaluate3);
+    \path [line] (evaluate3) -- (evaluate4);
+    \path [line] (evaluate4) -- (evaluate5);
+    \path [line] (evaluate5) -- (decide) ;
+    \path [line] (decide) -- node [near start] {no} (decide1);
+    \path [line] (decide1) -| (update);
+    \path [line] (decide1) -- (decide2);
+    \path [line] (update) |- (identify);
+    \path [line] (decide2) -- node {yes}(stop);
+    \path [line] (decide) -- node {yes}(stop);
+    \path [line,dashed] (system) |- (evaluate2);
+    \path [line,dashed] (system) |- (identify);
+    \path [line,dashed] (system) |- (evaluate3);
+
+\end{tikzpicture}
+
+\section{Contributions of Members}
+
+The group worked together through 5-6 face-to-face meetings.  At early stages of our work, we discussed the problem and all made contributions to our general approach and the pseudo-code of the algorithm for adaptive rejection sampling.  In later meetings, we all coded together and collaborated in areas that represented our individual strengths.  We made our work as cohesive as possible by asking questions and ensuring that all members were following the same line of analysis and coding style.
+
+Chris wrote the core functions of the 'ars' function and developed the updating plotting method for the simulation.  He also pulled all of our final files into an R package.
+
+Tom worked on the lower bound function, as well as vectorizing and debugging of the initVal (initial abscissae) function.  Tom also wrote the equations used in the paper in latex syntax.
+
+Hairong helped work on the initial abscissae function (initVal) used to create the starting x values for the ARS algorithm, and did preliminary work on the code for the sampling step.  She also wrote .Rd help files for half of the functions in our code.
+
+Brittney helped work on the initialization function with Hairong, and wrote the other half of the .Rd help documentation.  Additionally, she drafted the written documentation to submit for the project.
+
+
+\end{document}
