@@ -32,7 +32,8 @@ If the argument named evol.pdf is listed as a file directory, then the simulatio
 The ars function returns a vector of the B simulated values found.
 }
 \references{
- W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2(1992), pp. 337-348.}}
+ W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2(1992), pp. 337-348.
+ }
 \examples{
 f<- function(x){dnorm(x,5,2.5)} 
 ars(B=100, f=f ,l_f=-Inf, u_f=Inf, ep=1e-10 , m=10, evol.pdf='NO')  #no pdf displayed

@@ -21,7 +21,7 @@ A vector of values between 0 and 1.
   \item{abscissae$z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}
 }
 \details{
-\eqn{S_{inv}} is the inverse of \code{\link(S)}. The function has particular form of exponential of piecewise linear function. Given a value between 0 and 1, it can be determined which piece of the exponentiated envelope function to use by \code{\link{bucket}} (denoted by j). After subtracting the cumulative density over the preceding (j-1) spaces, apply the remainder to the corresponding piece of inverse function and then obtain the data point for the X variable.  
+\eqn{S_{inv}} is the inverse of \code{\link{S}}. The function has particular form of exponential of piecewise linear function. Given a value between 0 and 1, it can be determined which piece of the exponentiated envelope function to use by \code{\link{bucket}} (denoted by j). After subtracting the cumulative density over the preceding (j-1) spaces, apply the remainder to the corresponding piece of inverse function and then obtain the data point for the X variable.  
 }
 \value{
 A vector of points whose CDF is \eqn{S}.

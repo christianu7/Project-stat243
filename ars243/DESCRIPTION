@@ -1,6 +1,6 @@
-Package: ars_243_v0.1
+Package: ars243
 Type: Package
-Title: Adaptative Rejection Sampling
+Title: Adaptive Rejection Sampling
 Version: 0.1
 Date: 2013-12-12
 Author: Carmona, McCann, Benchoff, Xie

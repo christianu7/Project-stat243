@@ -1,0 +1,48 @@
+
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin10.8.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "ars243"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('ars243')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("S")
+> ### * S
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: S
+> ### Title: Cumulative density function of normalized exponentiated upper
+> ###   hull function
+> ### Aliases: S
+> ### Keywords: ~kwd1 ~kwd2
+> 
+> ### ** Examples
+> 
+> T_k<-c(-3,-1,1,3)
+> h_T<-log(dnorm(T_k))
+> hp<-function(x){-x}
+> hp_T<-hp(T_k)
+> z_i<-c(-Inf,-2, 0, 2,Inf)
+> x<-c(-1,3)
+> S(x , T_k, h_T , hp_T , z_i)
+Error in S(x, T_k, h_T, hp_T, z_i) : unused arguments (h_T, hp_T, z_i)
+Execution halted

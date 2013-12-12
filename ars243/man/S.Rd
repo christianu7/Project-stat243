@@ -18,7 +18,7 @@ A vector of values where the CDF is evaluated.
   \item{T_k}{An ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment.}
   \item{h_T}{A vector of values of the log of the objective function at values of \eqn{T_k}.}
   \item{hp_T}{A vector of the first derivative of the log of the objective function at values in \eqn{T_k}.}
-  \item{z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}}
+  \item{z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}
 }
 \details{
 \eqn{S} evaluates the cumulative density of the exponentiated upper hull function. First, determine which segment of the exponentiated envelope function x falls into, say the j-th. Add the integral on all the (j-1) segments before the j-th segment. Then integrate the j-th piece of the function over the interval \eqn{[z_{j-1}, x]} and add it to the preceding integral to get the CDF of the exponentiated envelope function at x.  

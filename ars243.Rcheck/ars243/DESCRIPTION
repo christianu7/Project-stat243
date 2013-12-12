@@ -1,0 +1,10 @@
+Package: ars243
+Type: Package
+Title: Adaptative Rejection Sampling
+Version: 0.1
+Date: 2013-12-12
+Author: Carmona, McCann, Benchoff, Xie
+Maintainer: 243 team <ccarmona@berkeley.edu>
+Description: Method for rejection sampling from any univariate log-concave probability density function. Based on Gilks and Wild (1992)
+License: -
+Built: R 3.0.1; ; 2013-12-12 22:08:11 UTC; unix

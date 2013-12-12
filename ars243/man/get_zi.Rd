@@ -19,3 +19,4 @@
 \examples{
 testInput <- list(T_k=c(-10,1,4,8), h_T=c(-19, -3, -2, -2.5), hp_T=c(2, 0.5, 0.1, -0.5), z_i=NULL, k=4, l_h=-12, u_h=10)
 get_zi.abscissae(testInput)
+}

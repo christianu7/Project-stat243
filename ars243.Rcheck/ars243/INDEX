@@ -1,0 +1,20 @@
+S                       Cumulative density function of normalized
+                        exponentiated upper hull function
+S_inv                   Inverse of the Cumulative Distribution of the
+                        exponentiated envelope function
+add_points.abscissae    Update the abscissae set
+ars                     Adaptive Rejection Sampling
+as.abscissae            Generating Output of Summary Information.
+bucket                  Bucket Function.
+check.abscissae         Generation of Initial X Values for ARS.
+deriv_num               Numeric Differentiation of Functions or
+                        Expressions.
+get_zi                  Compute Intersection Points of Derivatives.
+int_s                   Integral of exponentiated upper hull function
+l                       calculate the squeezing function
+permdiff                Permutation Test (Non-Parametric Test)
+plot.abscissae          Plot upper and lower function and sampling PDF
+                        and CDF
+s                       Normalized exponentiated envelope function.
+test                    Testing Function
+u                       Calculate the envelop function value

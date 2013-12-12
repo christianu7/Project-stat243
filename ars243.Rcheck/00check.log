@@ -1,0 +1,248 @@
+* using log directory ‘/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/Project-stat243/ars243.Rcheck’
+* using R version 3.0.1 (2013-05-16)
+* using platform: x86_64-apple-darwin10.8.0 (64-bit)
+* using session charset: UTF-8
+* checking for file ‘ars243/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘ars243’ version ‘0.1’
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... NOTE
+Found the following hidden files and directories:
+  .DS_Store
+  R/.DS_Store
+  R/.Rhistory
+  inst/.Rhistory
+  man/.DS_Store
+  man/.Rapp.history
+  man/.Rhistory
+These were most likely included in error. See section ‘Package
+structure’ in the ‘Writing R Extensions’ manual.
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘ars243’ can be installed ... OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking DESCRIPTION meta-information ... WARNING
+Non-standard license specification:
+  -
+Standardizable: FALSE
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking for unstated dependencies in R code ... OK
+* checking S3 generic/method consistency ... WARNING
+add_points:
+  function(x, ...)
+add_points.abscissae:
+  function(x, new_T_k, new_h_T, new_hp_T)
+
+check:
+  function(x, ...)
+check.abscissae:
+  function(abscissae)
+
+get_zi:
+  function(x, ...)
+get_zi.abscissae:
+  function(x)
+
+plot:
+  function(x, ...)
+plot.abscissae:
+  function(abscissae, plot.h)
+
+See section ‘Generic functions and methods’ of the ‘Writing R
+Extensions’ manual.
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+ars: no visible binding for global variable ‘x’
+check.abscissae: no visible binding for global variable ‘bound’
+check.abscissae: no visible binding for global variable ‘init_val’
+check.abscissae: no visible global function definition for ‘h’
+check.abscissae: no visible binding for global variable ‘ep’
+plot.abscissae: no visible binding for global variable ‘x’
+* checking Rd files ... WARNING
+prepare_Rd: S.Rd:35-37: Dropping empty section \note
+prepare_Rd: S.Rd:32-34: Dropping empty section \author
+prepare_Rd: S.Rd:41-43: Dropping empty section \seealso
+checkRd: (7) S.Rd:11: Tag \eqn is invalid in a \usage block
+prepare_Rd: S_inv.Rd:35-37: Dropping empty section \note
+prepare_Rd: S_inv.Rd:32-34: Dropping empty section \author
+prepare_Rd: S_inv.Rd:41-43: Dropping empty section \seealso
+checkRd: (7) S_inv.Rd:11: Tag \eqn is invalid in a \usage block
+prepare_Rd: add_points.abscissae.Rd:31-37: Dropping empty section \value
+prepare_Rd: add_points.abscissae.Rd:44-46: Dropping empty section \note
+prepare_Rd: add_points.abscissae.Rd:41-43: Dropping empty section \author
+prepare_Rd: add_points.abscissae.Rd:50-52: Dropping empty section \seealso
+prepare_Rd: ars.Rd:4-6: Dropping empty section \description
+checkRd: (5) ars.Rd:0-46: Must have a \description
+prepare_Rd: int_s.Rd:32-34: Dropping empty section \note
+prepare_Rd: int_s.Rd:29-31: Dropping empty section \author
+prepare_Rd: int_s.Rd:38-40: Dropping empty section \seealso
+checkRd: (7) int_s.Rd:11: Tag \eqn is invalid in a \usage block
+prepare_Rd: l.Rd:31-33: Dropping empty section \note
+prepare_Rd: l.Rd:28-30: Dropping empty section \author
+prepare_Rd: l.Rd:37-39: Dropping empty section \seealso
+checkRd: (7) l.Rd:11: Tag \eqn is invalid in a \usage block
+prepare_Rd: plot.abscissae.Rd:27-33: Dropping empty section \value
+prepare_Rd: plot.abscissae.Rd:40-42: Dropping empty section \note
+prepare_Rd: plot.abscissae.Rd:37-39: Dropping empty section \author
+prepare_Rd: plot.abscissae.Rd:34-36: Dropping empty section \references
+prepare_Rd: plot.abscissae.Rd:46-48: Dropping empty section \seealso
+prepare_Rd: s_pdf.Rd:35-37: Dropping empty section \note
+prepare_Rd: s_pdf.Rd:32-34: Dropping empty section \author
+prepare_Rd: s_pdf.Rd:41-43: Dropping empty section \seealso
+checkRd: (7) s_pdf.Rd:11: Tag \eqn is invalid in a \usage block
+prepare_Rd: test.Rd:40-42: Dropping empty section \examples
+prepare_Rd: u.Rd:33-35: Dropping empty section \note
+prepare_Rd: u.Rd:30-32: Dropping empty section \author
+prepare_Rd: u.Rd:39-41: Dropping empty section \seealso
+checkRd: (7) u.Rd:11: Tag \eqn is invalid in a \usage block
+* checking Rd metadata ... OK
+* checking Rd cross-references ... WARNING
+Missing link or links in documentation object ‘/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/Project-stat243/ars243/man/add_points.abscissae.Rd’:
+  ‘get_zi.abscissae’
+
+Missing link or links in documentation object ‘/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/Project-stat243/ars243/man/get_zi.Rd’:
+  ‘create_abscissae’
+
+See the information in section ‘Cross-references’ of the ‘Writing R
+Extensions’ manual.
+
+* checking for missing documentation entries ... WARNING
+Undocumented code objects:
+  ‘add_points’ ‘check’ ‘get_zi.abscissae’
+All user-level objects in a package should have documentation entries.
+See the chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking for code/documentation mismatches ... WARNING
+Codoc mismatches from documentation object 'ars':
+ars
+  Code: function(B = 100, f, l_f = -Inf, u_f = Inf, init_abs = NULL,
+                 eps = 1e-10, m = "exp", rej_evol.pdf = NULL,
+                 abs_evol.pdf = NULL, hist.pdf = NULL)
+  Docs: function(B, f, l_f = -Inf, u_f = Inf, init_abs = NULL, ep =
+                 1e-10, m = 10, evol.pdf = F)
+  Argument names in code not in docs:
+    eps rej_evol.pdf abs_evol.pdf hist.pdf
+  Argument names in docs not in code:
+    ep evol.pdf
+  Mismatches in argument names:
+    Position: 6 Code: eps Docs: ep
+    Position: 8 Code: rej_evol.pdf Docs: evol.pdf
+  Mismatches in argument default values:
+    Name: 'B' Code: 100 Docs: 
+    Name: 'm' Code: "exp" Docs: 10
+
+Codoc mismatches from documentation object 'check.abscissae':
+check.abscissae
+  Code: function(abscissae)
+  Docs: function(x, bound, ep)
+  Argument names in code not in docs:
+    abscissae
+  Argument names in docs not in code:
+    x bound ep
+  Mismatches in argument names:
+    Position: 1 Code: abscissae Docs: x
+
+Codoc mismatches from documentation object 'get_zi':
+get_zi
+  Code: function(x, ...)
+  Docs: function(x)
+  Argument names in code not in docs:
+    ...
+
+Codoc mismatches from documentation object 'test':
+test
+  Code: function(B, f, init_val, l_f, u_f, rdensity, ddensity, eps =
+                 0.001, leg = "Density", ...)
+  Docs: function(B, f, init_val, l_f, u_f, rdensity, ddensity, ep =
+                 0.001, leg = "Density", ...)
+  Argument names in code not in docs:
+    eps
+  Argument names in docs not in code:
+    ep
+  Mismatches in argument names:
+    Position: 8 Code: eps Docs: ep
+
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in documentation object 'ars'
+  ‘init_abs’
+
+Undocumented arguments in documentation object 'plot.abscissae'
+  ‘abscissae’
+Documented arguments not in \usage in documentation object 'plot.abscissae':
+  ‘abscissae$h’ ‘abscissae$T_k’ ‘abscissae$h_T’ ‘abscissae$hp_T’
+  ‘abscissae$z_i’
+
+Bad \usage lines found in documentation object 'S':
+  <unescaped bksl>eqn{S(x , T_k, h_T , hp_T , z_i)}
+Bad \usage lines found in documentation object 'S_inv':
+  <unescaped bksl>eqn{S_inv(x , T_k, h_T , hp_T , z_i)} 
+Bad \usage lines found in documentation object 'as.abscissae':
+   as.abscissae(x, h, l_h, u_h, eps)) 
+Bad \usage lines found in documentation object 'int_s':
+  <unescaped bksl>eqn{int_s(T_k, h_T, hp_T, z_i)}
+Bad \usage lines found in documentation object 'l':
+  <unescaped bksl>eqn{l( x , T_k , h_T )}
+Bad \usage lines found in documentation object 's':
+  <unescaped bksl>eqn{s(x , T_k, h_T , hp_T , z_i)}
+Bad \usage lines found in documentation object 'u':
+  <unescaped bksl>eqn{u( x , T_k , h_T , hp_T , z_i )}
+
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See the chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+S3 methods shown with full name in documentation object 'add_points.abscissae':
+  ‘add_points.abscissae’
+
+S3 methods shown with full name in documentation object 'check.abscissae':
+  ‘check.abscissae’
+
+S3 methods shown with full name in documentation object 'plot.abscissae':
+  ‘plot.abscissae’
+
+The \usage entries for S3 methods should use the \method markup and not
+their full name.
+See the chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... WARNING
+Warning: parse error in file ‘ars243-Ex.R’:
+\U"
+* checking examples ... ERROR
+Running examples in ‘ars243-Ex.R’ failed
+The error most likely occurred in:
+
+> ### Name: S
+> ### Title: Cumulative density function of normalized exponentiated upper
+> ###   hull function
+> ### Aliases: S
+> ### Keywords: ~kwd1 ~kwd2
+> 
+> ### ** Examples
+> 
+> T_k<-c(-3,-1,1,3)
+> h_T<-log(dnorm(T_k))
+> hp<-function(x){-x}
+> hp_T<-hp(T_k)
+> z_i<-c(-Inf,-2, 0, 2,Inf)
+> x<-c(-1,3)
+> S(x , T_k, h_T , hp_T , z_i)
+Error in S(x, T_k, h_T, hp_T, z_i) : unused arguments (h_T, hp_T, z_i)
+Execution halted

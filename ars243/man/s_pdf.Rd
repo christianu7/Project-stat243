@@ -18,7 +18,7 @@ A vector of values to determine the density of \eqn{s} at.
   \item{T_k}{An ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment.}
   \item{h_T}{A vector of values of the log of the objective function at values of \eqn{T_k}.}
   \item{hp_T}{A vector of the first derivative of the log of the objective function at values in \eqn{T_k}.}
-  \item{z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}}
+  \item{z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}
 }
 \details{
 First exponentiate the upper function calculated from \code{\link{u}}. To make it a density, it is normalized by dividing by \eqn{int_s}.  
