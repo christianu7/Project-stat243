@@ -148,7 +148,7 @@ plot.abscissae <- function(abscissae, plot.h=F) {
   layout(matrix(c(1,1:3),2,2,byrow=T))
   
   curve( l(x,abscissae), min(abscissae$T_k), max(abscissae$T_k), col="red", main="Upper and Lower functions" )
-  curve( u(x,abscissae), l_f+eps, u_f-eps, add=T, col="blue" )
+  curve( u(x,abscissae), l_f+ep, u_f-ep, add=T, col="blue" )
   if (plot.h) { curve( h(x), l_f, u_f, add=T) }
   
   curve( s(x,abscissae), l_f, u_f, col="blue", main="Sampling pdf" )
@@ -316,7 +316,7 @@ permdiff = function(x,y,B){
 #the two samples to check for the similarity between distributions.
 #It returns the two samples, the means of each sample and the p-value
 #from the permutation test.
-test <- function(B, f, init_val, l_f, u_f, ep = ep, rdensity, ...){ 
+test <- function(B, f, init_val, l_f, u_f, rdensity, ddensity, ep = 1e-3, leg="Density", ...){ 
   
   samp_ars <- ars(B, f, init_val, l_f, u_f, ep = 1e-5)
   samp_theo <- rdensity(B,...)
@@ -327,8 +327,9 @@ test <- function(B, f, init_val, l_f, u_f, ep = ep, rdensity, ...){
   p <- permdiff(samp_ars, samp_theo, 2000)
   ARS <- list(samp_ars, samp_theo, mean, p)
   names(ARS) <- c("ARS Sample", "Theoretical Sample", "Means", "p-value")
-  par(mfrow = c(1, 2))
-  hist(samp_ars, breaks = B/10, main = "ARS Sample")
-  hist(samp_theo, breaks = B/10, main = "Theoretical Sample")
+  hist(samp_ars, freq = F, col = "grey95", main = "Density", xlab = "ARS Sample")
+  legend("topright",legend=leg,bty="n")
+  density <- function(x){ ddensity(x, ...)}
+  curve(density, add = T, col = "blue" )
   return(ARS)
 }
