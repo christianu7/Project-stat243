@@ -63,11 +63,11 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
     
     # sampling from s(x)
     x_star <- S_inv( runif(m,0,1) , abscissae )
-    
+    #browser()
     ### Testing sample ###
     # (1) squeezing test
       accept_1 <- ( w <= exp( l(x_star,abscissae) - u(x_star,abscissae) ) )
-      accept_1[is.na(accept_1)] <- F # those sampled values not defined in l(x)
+      #accept_1[is.na(accept_1)] <- F # those sampled values not defined in l(x)
       if (any(accept_1)) {
         sim_values <- c(sim_values,x_star[accept_1])
       }
@@ -93,8 +93,8 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
              min(abscissae$T_k), max(abscissae$T_k), col="darkgreen", lty=2, add=T )
       abline(v=abscissae$z_i,col="orange",lty=3)
       points(x=x_star[accept_1],w[accept_1],col="green",pch=19)
-      legend("topleft",legend=c("phase 1","phase 2","rejected"),col=c("green","gold","red"),bg="white",pch=19)
-      legend("topright",legend=c("exp(h(x)-u(x))","exp(l(x)-u(x))","z_i"),col=c("darkgreen","darkgreen","orange"),bg="white",lty=c(1,2,3))
+      legend("left",legend=c("phase 1","phase 2","rejected"),col=c("green","gold","red"),bg="white",pch=19)
+      legend("right",legend=c("exp(h(x)-u(x))","exp(l(x)-u(x))","z_i"),col=c("darkgreen","darkgreen","orange"),bg="white",lty=c(1,2,3))
     }
 
     ### Testing sample ###

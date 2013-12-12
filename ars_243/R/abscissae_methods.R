@@ -204,7 +204,7 @@ l <- function( x, abscissae ) {
   l_notdef <- x<min(T_k)|x>max(T_k)
   j[l_notdef] <- 1
   l <- ( (T_k[j+1]-x)*h_T[j] + (x-T_k[j])*h_T[j+1] ) / (T_k[j+1]-T_k[j])
-  l[l_notdef] <- 0
+  l[l_notdef] <- -Inf
   return( l )
 }
 
