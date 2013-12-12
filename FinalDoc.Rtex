@@ -103,10 +103,12 @@ For additional information, see Help Manual.
 \newpage
 \begin{titlepage}
 \begin{center}
-\textsc{\LARGE Flow Chart}\\[1.5cm]
+\textsc{\LARGE Flow Chart}\\[.2cm]
+\textsc{\Large Sampling B Numbers from Specified Distribution}\\[.6cm]
+
 
 \tikzstyle{decision} = [rectangle, draw, fill=red!20, 
-    text width=11em, text badly centered, node distance=2cm, minimum height=4em]
+    text width=11em, text badly centered, node distance=2cm, minimum height=4em, minimum width=14em]
 \tikzstyle{block} = [rectangle, draw, fill=blue!20, 
     text width=9em, text badly centered, rounded corners,node distance=2cm, minimum height=4em]
 \tikzstyle{blocksm} = [rectangle, draw, fill=blue!20, 
@@ -114,30 +116,37 @@ For additional information, see Help Manual.
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=4cm,
     minimum height=2em]
+\tikzstyle{star1} = [star,star points=7,star point ratio=0.8]
+\tikzstyle{circle1} = [circle, draw, fill=green!20, 
+    text width=4em, text badly centered, rounded corners,node distance=8cm, minimum height=6em]
 \begin{tikzpicture}[node distance = 1.5cm, auto]
     % Place nodes
-    \node [blocksm] (left1) {user input points};
-    \node [blocksm, right of=left1, node distance=3cm] (left2) {check validity};
-    \node [block, right of=left2, node distance=3.5cm] (init) {initial points};
-    \node [block, below of=init] (identify) {create $\emph{l}$ and $\emph{u}$ function};
-    \node [block, below of=identify] (evaluate1) {create $\emph{int}_{s}$ function as integral of $e^{u(x)}$ over $\emph{D}$};
-    \node [cloud, right of=evaluate1] (system) {bucket function};
-    \node [block, below of=evaluate1] (evaluate2) {create $\emph{S}=\emph{s}/\emph{int}_{s}$ as the sampling density};
-    \node [block, below of=evaluate2] (evaluate3) {create $\emph{S}_{inv}$ as inverse function of $\emph{S}$};
-    \node [block, below of=evaluate3, node distance=2.5cm] (evaluate4) {sample $U$ from $\emph{Unif}(0,1)$ and calculate candidate sampling point $x^{*}$ from $\emph{S}_{inv}(u)$};
-    \node [block, below of=evaluate4, node distance=2.5cm] (evaluate5) {generate $\emph{w}$ from $\emph{Unif}(0,1)$};
-    \node [blocksm, left of=evaluate3, node distance=5cm] (update) {update abscissae set};
-    \node [decision, below of=evaluate5] (decide) {\mbox{$\emph{w} \le \text{exp}\{\emph{l}(x^{*})-\emph{u}(x^{*})\}$}?};
-    \node [blocksm, left of=decide, node distance=4cm] (decide1) {calculate $\emph{h}(x^{*})$};
-    \node [decision, below of=decide1] (decide2) {\mbox{$\emph{w} \le \text{exp}\{\emph{h}(x^{*})-\emph{u}(x^{*})\}$}?};
-    \node [blocksm, below of=decide, node distance=2cm] (stop) {accept $x^{*}$};
+    \node [blocksm] (left1) {User input points};
+    \node [blocksm, right of=left1, node distance=3cm] (left2) {Check validity};
+    \node [block, right of=left2, node distance=3.5cm] (init) {Initial abscissae};
+    \node [decision, below of=init] (while) {Length of $X^{*} < B$?};
+    \node [block, below of=while] (identify) {Create $\emph{l}$ and $\emph{u}$ function};
+    \node [circle1, right of=while, node distance=6cm] (finish) {Finished!};
+    \node [block, below of=identify] (evaluate1) {Create $\emph{int}_{s}$ function as integral of $e^{u(x)}$ over $\emph{D}$};
+    \node [cloud, right of=evaluate1] (system) {Bucket function};
+    \node [block, below of=evaluate1] (evaluate2) {Create $\emph{S}=\emph{s}/\emph{int}_{s}$ as the sampling density};
+    \node [block, below of=evaluate2] (evaluate3) {Create $\emph{S}_{inv}$ as inverse function of $\emph{S}$};
+    \node [block, below of=evaluate3, node distance=2.5cm] (evaluate4) {Sample $U$ from $\emph{Unif}(0,1)$ and calculate candidate sample $X^{*}$ from $\emph{S}_{inv}(u)$};
+    \node [block, below of=evaluate4, node distance=2.5cm] (evaluate5) {Generate $\emph{W}$ from $\emph{Unif}(0,1)$};
+    \node [blocksm, left of=evaluate3, node distance=5cm] (update) {Update abscissae set};
+    \node [decision, below of=evaluate5] (decide) {\mbox{$\emph{w}_{i} \le \text{exp}\{\emph{l}(x_{i}^{*}) - \emph{u}(x_{i}^{*})\}$}?};
+    \node [blocksm, left of=decide, node distance=4cm] (decide1) {Calculate $\emph{h}'(x_{i}^{*})$};
+    \node [decision, below of=decide1] (decide2)  {\mbox{$\emph{w}_{i} \le \text{exp}\{\emph{h}(x_{i}^{*}) - \emph{u}(x_{i}^{*})\}$}?};
+    \node [blocksm, below of=decide, node distance=2cm] (stop) {Add $x_{i}^{*}$ to $X^{*}$};
     % Draw edges
     \path [line] ([yshift=-1ex]left1.east) -- ([yshift=-1ex]left2.west);
     %\path [line] (left2) -- node {not valid} (left1);
     %\path ([yshift=1ex]left2.west) edge ([yshift=1ex]left1.east);
     \path [line] ([yshift=1ex]left2.west) -- node [above] {not valid} ([yshift=1ex]left1.east);
     \path [line] (left2) -- (init);
-    \path [line] (init) -- (identify);
+    \path [line] (init) -- (while);
+    \path [line] (while) edge node[auto] {no} (finish);
+    \path [line] (while) -- node {yes}(identify);
     \path [line] (identify) -- (evaluate1);
     \path [line] (evaluate1) -- (evaluate2);
     \path [line] (evaluate2) -- (evaluate3);
@@ -147,7 +156,7 @@ For additional information, see Help Manual.
     \path [line] (decide) -- node [near start] {no} (decide1);
     \path [line] (decide1) -| (update);
     \path [line] (decide1) -- (decide2);
-    \path [line] (update) |- (identify);
+    \path [line] (update) |- (while);
     \path [line] (decide2) -- node {yes}(stop);
     \path [line] (decide) -- node {yes}(stop);
     \path [line,dashed] (system) |- (evaluate2);
