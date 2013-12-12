@@ -3,7 +3,6 @@
 
 get_zi <- function (x, ...) UseMethod("get_zi")
 get_zi.abscissae <- function(x) {
-  #UseMethod("abscissae")
   #browser()
   T_k <- x$T_k
   h_T <-  x$h_T
