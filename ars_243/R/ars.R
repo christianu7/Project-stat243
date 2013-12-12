@@ -20,9 +20,9 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
   } else {
     abscissae <- as.abscissae( init_abs, f, l_h=l_f, u_h=u_f, eps=eps )
   }
-  #check(abscissae)
+  check(abscissae)
   abscissae <- get_zi( abscissae )
-  #check(abscissae)
+  check(abscissae)
   
   #####     Simulation     #####
   
@@ -119,7 +119,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
       # Add to abscissae those point evaluated in h(x)
       abscissae <- add_points.abscissae( abscissae, new_T_k, new_h_T, new_hp_T )
       abscissae <- get_zi( abscissae )
-      #check( abscissae )
+      check( abscissae )
     }
     
   }

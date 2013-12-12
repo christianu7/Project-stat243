@@ -1,0 +1,3 @@
+help(package="stats")
+library(VGAM)
+?VGAM

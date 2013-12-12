@@ -332,9 +332,9 @@ permdiff = function(x,y,B){
 #the two samples to check for the similarity between distributions.
 #It returns the two samples, the means of each sample and the p-value
 #from the permutation test.
-test <- function(B, f, init_val, l_f, u_f, rdensity, ddensity, ep = 1e-3, leg="Density", ...){ 
+test <- function(B, f, init_val, l_f, u_f, rdensity, ddensity, eps = 1e-3, leg="Density", ...){ 
   
-  samp_ars <- ars(B, f, init_val, l_f, u_f, ep = 1e-5)
+  samp_ars <- ars(B, f, init_val, l_f, u_f, eps = 1e-5)
   samp_theo <- rdensity(B,...)
   m_ars <- mean(samp_ars)
   m_theo <- mean(samp_theo)
