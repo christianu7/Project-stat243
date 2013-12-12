@@ -1,6 +1,6 @@
 rm(list=ls())
 
-if(F) {
+if(T) {
   script.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/Project-stat243/ars_243/R/"
   out.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/"
 }
@@ -25,6 +25,12 @@ if(F) {
   # Normal distribution
   mu <- 5
   sigma <- 2
+<<<<<<< HEAD
+  f <- expression( (2*pi*sigma^2)^(-1/2) * exp(-(x-mu)^2/(2*sigma^2)) )
+  #f <- function(x) {dnorm(x,mu,sigma)}
+  l_f=mu-10*sigma
+  u_f=mu+10*sigma
+=======
   #f <- expression( (2*pi*sigma^2)^(-1/2) * exp(-(x-mu)^2/(2*sigma^2)) )
   f <- function(x) {dnorm(x,mu,sigma)}
   l_f = -Inf #mu - 10*sigma
@@ -33,6 +39,7 @@ if(F) {
   test_N <- test(B, f, init_val, l_f, u_f, rnorm, mean = mu, sd = sigma, ep = ep)
   test_N$Means
   test_N$`p-value`
+>>>>>>> 0642aebe47f9a32b0e1a59655472f7e2a65ed005
 }
 if(F) {
   # Beta distribution
@@ -169,3 +176,17 @@ if(F){
 
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+ars( B, f ,l_f, u_f,
+    init_abs=seq(l_f+0.01,u_f-0.01,length.out=4),
+    ep=1e-10,
+    m="exp",
+    evol.pdf="test.pdf"
+    )
+  
+=======
+>>>>>>> 0642aebe47f9a32b0e1a59655472f7e2a65ed005
+  
+>>>>>>> 73e4aa5fdcad8e494cd659bde9baee3b4c7c1aa3

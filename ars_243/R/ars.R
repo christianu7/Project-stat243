@@ -1,7 +1,7 @@
 
 #####     Adaptative rejecting sampling method     #####
 
-ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m=10, evol.gif=F ) {
+ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m="exp", evol.pdf=NULL ) {
   # require(ars_243)
   # browser()
   if ( is.expression(f) ) {
@@ -18,7 +18,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m=10, ev
   if (is.null(init_abs)) {
     abscissae <- init_abs( h, l_h=l_f, u_h=u_f)
   } else {
-    abscissae <- as.abscissae( init_abs, h, l_h=l_f, u_h=u_f, eps=eps )
+    abscissae <- as.abscissae( init_abs, f, l_h=l_f, u_h=u_f, eps=eps )
   }
   check(abscissae)
   abscissae <- get_zi( abscissae )
@@ -30,16 +30,18 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m=10, ev
   # Numbers of points tested on each iteration
   iter <- 0
   
-  if( evol.gif ) {
+  if( !is.null(evol.pdf) ) {
     def.par <- par(no.readonly = TRUE) # save default plot settings, for resetting...
+    pdf(file=evol.pdf,width=10, height=7, onefile=T)
   }
   
+  m_orig <- m
   while (length(sim_values)<B) {
   #while (iter<10) {
     iter <- iter + 1
     
-    if(m=="exp") { m<-2^iter }
-    if(m=="lin") { m<-2*iter }
+    if(m_orig=="exp") { m<-2^iter }
+    if(m_orig=="lin") { m<-2*iter }
     suppressWarnings( m <- as.numeric(m) )
     if( is.na(m) ) {stop('"m" has to be either a number or any of "exp", or "lin"')}
     
@@ -50,7 +52,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m=10, ev
     x_star <- S_inv( runif(m,0,1) , abscissae )
     
     # Plot of accepted and rejected points in phase 1 or 2
-    if( evol.gif ) {
+    if( !is.null(evol.pdf) ) {
       layout(matrix(1:2))
       par(mar=c(0,0,0,0)+2)
       
@@ -88,14 +90,16 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, ep=1e-10 , m=10, ev
       # Add to abscissae those point evaluated in h(x)
       abscissae <- add_points.abscissae( abscissae, new_T_k, new_h_T, new_hp_T )
       abscissae <- get_zi( abscissae )
+      check( abscissae )
     }
     
   }
 
-  if( evol.gif ) {
+  if( !is.null(evol.pdf) ) {
     par(def.par)  #- reset plot settings to default
+    dev.off()
   }
   
-  return( sim_values )
+  return( sim_values[1:B] )
   
 }
