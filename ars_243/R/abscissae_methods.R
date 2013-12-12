@@ -9,6 +9,7 @@ get_zi.abscissae <- function(x) {
   hp_T <- x$hp_T
   k <- length(T_k)
   z_i <- ( h_T[-1] - h_T[-k] - T_k[-1] * hp_T[-1] + T_k[-k] * hp_T[-k] ) / (hp_T[-k]-hp_T[-1])
+  if( all(hp_T==hp_T[1]) ) { z_i <- (T_k[-1] + T_k[-k])/2 } # in case of exponential, we can continue simulation by defining zi in the middle of Tk's
   if( any(is.na(z_i)|is.nan(z_i)) ) { stop("Some elements of z_i could not be calculated") }
   z_i <- c(x$l_h,z_i,x$u_h)
   x$z_i <- z_i

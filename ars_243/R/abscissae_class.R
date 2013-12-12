@@ -14,8 +14,11 @@ as.abscissae <- function( x, f, l_h, u_h, eps ) {
   h <- function(x){ log(f(x)) }
   
   T_k <- x
+  
   h_T <-  h(T_k)
+  
   hp_T <- ( h(T_k+eps) - h_T ) / eps
+  hp_T <- round(hp_T,10)
   
   k <- length(T_k)
   abscissae <- structure(

@@ -47,6 +47,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
   while (length(sim_values)<B) {
   #while (iter<10) {
     iter <- iter + 1
+    print(iter)
     
     if(m_orig=="exp") { m<-2^iter }
     if(m_orig=="lin") { m<-2*iter }
@@ -84,17 +85,17 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
       par(mar=c(0,0,0,0)+2)
       
       curve(f(x),limx1,limx2,main="f(x) and s(x)",col="black")
-      curve(s(x,abscissae),limx1,limx2,col="red",add=T)
-      legend("topright",legend=c("s(x)","f(x)"),col=c("red","black"),bg="white",lty=1)
+      curve(s(x,abscissae),limx1,limx2,col="red",add=T,lty=2)
+      legend("topright",legend=c("s(x)","f(x)"),col=c("red","black"),bg="white",lty=c(2,1))
       
       curve( exp( h(x) - u(x,abscissae) ) ,
              limx1, limx2, col="darkgreen", lty=1, main="Squeezing and Rejection areas", ylim=c(0,1), ylab="" )
       curve( exp( l(x,abscissae) - u(x,abscissae)),
-             min(abscissae$T_k), max(abscissae$T_k), col="darkgreen", lty=2, add=T )
+             min(abscissae$T_k), max(abscissae$T_k), col=rgb(0,200,0,maxColorValue=256), lty=2, lwd=1.5, add=T)
       abline(v=abscissae$z_i,col="orange",lty=3)
       points(x=x_star[accept_1],w[accept_1],col="green",pch=19)
       legend("left",legend=c("phase 1","phase 2","rejected"),col=c("green","gold","red"),bg="white",pch=19)
-      legend("right",legend=c("exp(h(x)-u(x))","exp(l(x)-u(x))","z_i"),col=c("darkgreen","darkgreen","orange"),bg="white",lty=c(1,2,3))
+      legend("right",legend=c("exp(h(x)-u(x))","exp(l(x)-u(x))","z_i"),col=c("darkgreen",rgb(0,200,0,maxColorValue=256),"orange"),bg="white",lty=c(1,2,3))
     }
 
     ### Testing sample ###
@@ -103,7 +104,7 @@ ars <- function( B=100, f ,l_f=-Inf, u_f=Inf, init_abs=NULL, eps=1e-10 , m="exp"
     if( any(!accept_1) ) {
       new_T_k <- x_star[!accept_1]
       new_h_T <-  h(new_T_k)
-      new_hp_T <- ( h(new_T_k+eps) - new_h_T ) / eps
+      new_hp_T <- round( ( h(new_T_k+eps) - new_h_T ) / eps , 10 )
       
       accept_2 <- ( w[!accept_1] <= exp( new_h_T - u(new_T_k,abscissae) ) )
       if (any(accept_2)) {
