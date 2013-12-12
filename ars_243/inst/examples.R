@@ -13,18 +13,18 @@ source("ars.R")
 
 setwd(out.dir)
 
-if(F){
+if(T){
   install.packages('VGAM')
   require('VGAM')
 }
-
+par(mfrow = c(3,4))
 B <- 1000
 ep=1e-5
 
 #For a lot of the following distributions, epsilon must be fairly 
 #large like 1e-2 or 1e-3, in order to get reasonable results.
 
-if(F) {
+if(T) {
   # Normal distribution
   mu <- 5
   sigma <- 2
@@ -41,7 +41,7 @@ if(F) {
   test_N$Means
   test_N$`p-value`
 }
-if(F) {
+if(T) {
   # Beta distribution
   a <- 5
   b <- 2
@@ -53,7 +53,7 @@ if(F) {
   test_B$Means
   test_B$`p-value`
 }
-if(F) {
+if(T) {
   # Gamma distribution
   r=15
   lambda=1
@@ -65,7 +65,7 @@ if(F) {
   test_Gm$Means
   test_Gm$`p-value`
 }
-if(F) {
+if(T) {
   # Chi-Square distribution
   d_f <- 10
   f <- function(x) { dchisq(x, d_f) }
@@ -76,7 +76,7 @@ if(F) {
   test_Ch$Means
   test_Ch$`p-value`
 }
-if(F) {
+if(T) {
   # Exponential distribution
   lambda <- .1
   f <- function(x) { dexp(x, lambda)}
@@ -89,7 +89,7 @@ if(F) {
   #x's must be fairly close to the mean of this distribution
   #to get reasonable results. 
 }
-if(F) {
+if(T) {
   # t distribution
   d_f <- 20
   f <- function(x) { dt(x, d_f)}
@@ -102,7 +102,7 @@ if(F) {
   #The degrees of freedom must be larger than the absolute value 
   #of the maximum and minimum of the x's.
 }
-if(F){
+if(T){
   # Gumbel distribution
   mu <- 10
   b <- 5
@@ -114,7 +114,7 @@ if(F){
   test_G$Means
   test_G$`p-value`
 }
-if(F){
+if(T){
   # Weibull distribution
   a <- 5
   b <- 5
@@ -128,7 +128,7 @@ if(F){
   #x values must be centered around mean with a somewhat wide 
   #spread to get a somewhat accurate mean.
 }
-if(F){
+if(T){
   # Pareto distribution
   a <- 1
   b <- 3
@@ -140,7 +140,7 @@ if(F){
   test_P$Means
   test_P$`p-value`
 }
-if(F){
+if(T){
   # F distribution
   df1 <- 3
   df2 <- 5
@@ -148,11 +148,11 @@ if(F){
   l_f <- 0
   u_f <- 50
   init_val <- c(0.01, 0.2, 0.3, 0.5, 0.6, 5, 20, 30, 40)
-  test_F <- test(B, f, init_val, l_f, u_f, rf, df, df1 = df1, df2 = df2, ep = ep, leg = "F")
+  test_F <- test(B, f, init_val, l_f, u_f, rf, ddensity = df, df1 = df1, df2 = df2, ep = ep, leg = "F")
   test_F$Means
   test_F$`p-value`
 }
-if(F){
+if(T){
   # 1/(x^5)
   f <- function(x){ x^(-5)}
   l_f <- 0.01
@@ -162,7 +162,7 @@ if(F){
   mean(test_poly)
   hist(test_poly, breaks = 75, main = "1/(x^5)")
 }
-if(F){
+if(T){
   # sin(x)
   a <- 100
   f <- function(x){ a*sin(x)}
