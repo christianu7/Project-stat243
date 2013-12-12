@@ -72,7 +72,7 @@ set.seed(0)
 r <- 5
 lambda <- 2
 ars( B=1000,
-     #f=function(x) {dgamma(x,shape=r,rate=2)},
+     #f=function(x) {dgamma(x,shape=r,rate=lambda)},
      f=expression( (lambda^r)/gamma(r) * x^(r-1) * exp(- lambda * x) ),
      l_f=0,
      u_f=Inf,
