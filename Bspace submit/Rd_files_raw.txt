@@ -1,0 +1,900 @@
+%%
+%%  All .RD help files included here.  Also see HTML print-out.
+%%
+
+
+
+
+\name{ars}
+\alias{ars}
+\title{Adaptive Rejection Sampling}
+\description{
+
+}
+\usage{
+	ars( B = 100, f, l_f = -Inf, u_f = Inf, init_abs, eps = 1e-04, m = "exp",
+    	rej_evol.pdf = NULL, abs_evol.pdf = NULL, hist.pdf = NULL
+    	)
+}
+\arguments{
+  \item{B}{Total number of points to be sampled using ARS}
+  \item{f}{The function to be sampled from, it has to be an object from class "expression" or "function"}
+  \item{l_f}{Lower bound of the function f}
+  \item{u_f}{Upper bound of the function f}
+  \item{init_abs}{ Initial values for abscissaes to run ARS }
+  \item{ep}{Small scalar value to act as the interval length to compute the numeric differentiation}
+  \item{m}{Determine how many samples to draw in each iteration of the algorithm.
+  			It can be a numeric value or a string: "exp" for sampling 2^i values in iteration i, or "lin" for sampling 2*i values in iteration i}
+  \item{rej_evol.pdf}{A character string: specifies the file to save a pdf with the evolution of the rejection areas for each iteration.
+  				If evol.pdf=NULL (default), no file is produced}
+  \item{abs_evol.pdf}{A character string: specifies the file to save a pdf with the evolution of the functions u(), l() s() and S() for each iteration.
+  				If abs_evol.pdf=NULL (default), no file is produced}
+  \item{hist.pdf}{A character string: specifies the file to save a pdf with the histogram of the final sample.
+  				If hist.pdf=NULL (default), no file is produced}
+}
+\details{
+The ars function first checks that the user input function f is of the class 'function'.  If it is not, it automatically converts expressions to function form before proceeding, or else returns an error for the user.  Initial abscissae for the algorithm are then validated using the \code{\link{as.abscissae}} function.  A check is then used to run additional tests on the user inputs, (i.e. log-concavity).  
+
+The simulation is then run until the desired number of points have been sampled from the user's function.  The simulation begins with sampling from a random uniform over [0,1].  X* is then found by sampling from s(x) (See help for \code{\link{S_inv}}, \code{\link{S}}, \code{\link{s}}, and \code{\link{int_s}}).
+
+The lower bound function and upper bound function are defined methods named 'l' and 'u' respectively (see \code{\link{l}} and \code{\link{u}}.)
+
+The formal squeeze and rejections tests are performed by comparing the sampled uniform, w, to exp( x* - u(x*) ), where u(x) is the upper bound function \code{\link{u}}.  If w is less than this value, then the sampled point x* is accepted.  Any points that are not accepted at this stage are passed through the rejection test, where h(x) and h'(x) are evaluated at those rejected x* values.  Uniform w's are again compared to exp( x* - u(x*) ), with the \code{\link{u}} function reevaluated for the new h(x) and h'(x) information.   From the squeeze and rejection tests, all accepted points are added to the set of simulated values, and the x values are added to the abscissae list which is then reordered along with the associated h(x) and h'(x).  The next iteration then begins with this information.
+}
+\value{
+The ars function returns a vector with the B simulated values from f.
+Aditionally, it can create up to 3 pdf files with the evolution of the method.
+}
+\references{
+ W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2(1992), pp. 337-348.
+ }
+\examples{
+
+#####     EXAMPLES WITH DIFFERENT DISTRIBUTIONS     #####
+
+# Normal distribution
+set.seed(0)
+mu <- 5
+sigma <- 2
+ars( B=1000,
+     #f=function(x) {dnorm(x,mu,sigma)},
+     f=expression( (2*pi*sigma^2)^(-1/2) * exp(-(x-mu)^2/(2*sigma^2)) ),
+     l_f=-Inf,
+     u_f=Inf,
+     init_abs=seq(0,6,1),
+     m="exp",
+     rej_evol.pdf= "rej_normal.pdf",
+     abs_evol.pdf= "abs_normal.pdf",
+     hist.pdf = "hist_normal.pdf"
+)
+
+# Truncated normal distribution
+set.seed(0)
+mu <- 5
+sigma <- 2
+ars( B=1000,
+     #f=function(x) {dnorm(x,mu,sigma)},
+     f=expression( (2*pi*sigma^2)^(-1/2) * exp(-(x-mu)^2/(2*sigma^2)) ),
+     l_f=-2,
+     u_f=7,
+     init_abs=seq(3,6,1),
+     m="exp",
+     rej_evol.pdf= "rej_normal_trunc.pdf",
+     abs_evol.pdf= "abs_normal_trunc.pdf",
+     hist.pdf = "hist_normal_trunc.pdf"
+)
+
+
+# Beta distribution
+set.seed(0)
+a <- 2
+b <- 2
+ars( B=1000,
+     f=function(x) {dbeta(x,a,b)},
+     #f=expression( (gamma(a+b)/(gamma(a)*gamma(b))) * x^(a-1) * (1-x)^(b-1) ),
+     l_f=0,
+     u_f=1,
+     init_abs=seq(0.1,0.9,0.2),
+     m="exp",
+     rej_evol.pdf= "rej_beta.pdf",
+     abs_evol.pdf= "abs_beta.pdf",
+     hist.pdf = "hist_beta.pdf"
+)
+
+
+# Exponential distribution
+set.seed(0)
+lambda <- 2
+ars( B=1000,
+     f=function(x) {dexp(x,lambda)},
+     #f=expression( lambda * exp(- lambda * x) ),
+     l_f=0,
+     u_f=Inf,
+     init_abs=seq(1,5,1),
+     m="exp",
+     rej_evol.pdf= "rej_exp.pdf",
+     abs_evol.pdf= "abs_exp.pdf",
+     hist.pdf = "hist_exp.pdf"
+)
+
+
+
+# Gamma distribution
+set.seed(0)
+r <- 5
+lambda <- 2
+ars( B=1000,
+     #f=function(x) {dgamma(x,shape=r,rate=lambda)},
+     f=expression( (lambda^r)/gamma(r) * x^(r-1) * exp(- lambda * x) ),
+     l_f=0,
+     u_f=Inf,
+     init_abs=seq(1,5,1),
+     m="exp",
+     rej_evol.pdf= "rej_gamma.pdf",
+     abs_evol.pdf= "abs_gamma.pdf",
+     hist.pdf = "hist_gamma.pdf"
+)
+
+
+}
+
+
+
+
+
+_____________________________
+
+\name{add_points.abscissae}
+\alias{add_points.abscissae}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+Update the abscissae set
+}
+\description{
+Add new points to the original abscissae set and then re-order the T_k set (an element in object abscissae) from small and change the order in abscissae$h_T and abscissae$h_T accordingly.
+}
+\usage{
+add_points.abscissae(x,new_T_k,new_h_T,new_hp_T)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{x}{
+ the old abscissae set which is a list(T_k, h_T, hp_T, z_i, k). T_k is An ordered vector of values on the support of the log of the objective function. h_T is a vector of values of the log of the objective function at values of T_k. abscissae$hp_T is a vector of the first derivative of the log of the objective function at values in T_k. A vector of values that implies the domain for each piecewise segment of the upper hull. k is the length of T_k set. 
+}
+  \item{new_T_k}{
+ a vector of values which needs to be added to the x$T_k
+}
+  \item{new_h_T}{
+ a vector of values which needs to be added to the x$h_T
+}
+  \item{new_hp_T}{
+ a vector of values which needs to be added to the x$hp_T
+}
+}
+\details{
+ combine new_T_k to x$T_k to make a new T_k set and reorder this new T_k set. Then add new_h_T to x$h_T and add new_hp_T to x$hp_T to make new h_T set and hp_T set. Order these two new sets according to the order in T_k set. z_i is the supporting value for the transition point in upper hull and its default is NULL. It can be calculated in \code{\link{get_zi.abscissae}} function. The calculate the number in T_k set to be the value of k.
+}
+\references{
+W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2 (1992), pp. 337-348.
+}
+
+\examples{
+T_k<-c(-3,-1,1,3)
+h_T<-log(dnorm(T_k))
+hp<-function(x){-x}
+hp_T<-hp(T_k)
+x <- list(T_k=T_k, h_T=h_T, hp_T=hp_T)
+class(x) <- "abscissae"
+new_T_k <- c(-5,5)
+new_h_T<-log(dnorm(new_T_k))
+hp<-function(x){-x}
+new_hp_T<-hp(new_T_k)
+add_points.abscissae(x = x, new_T_k = new_T_k, new_h_T = new_h_T, new_hp_T = new_hp_T)
+}
+
+
+____________________________
+
+\name{as.abscissae}
+\alias{as.abscissae}
+\title{ Generating Output of Summary Information.}
+\usage{ as.abscissae(x, f, l_h, u_h, eps)) }
+\description{
+  Supporting function to create an output of summary information regarding the abscissae found using the \code{\link{initVal}} function.  
+}
+\arguments{
+  \item{x}{ vector of initial points }
+  \item{f}{ The function (call) being used for analysis }  
+  \item{l_h}{ The lower bound of the function}
+  \item{u_h}{ The upper bound of the function}
+  \item{ep}{ The differential between each point of x and its next evaluation for estimation of the derivative}
+}
+\details{
+  as.abscissae is used to combine information into a clean output to be used as an output of the initVal function.  The returned value is a list of all key points needed for the adaptive rejection sampling analysis.
+}
+\value{
+   as.abscissae returns a list of the initial X values, the function h evaluated at each of those points, the derivative evaluated at those points, the number of X values (k), and the lower and upper bounds of the function.
+}
+\seealso{ \code{\link{initVal}} }
+\examples{
+   ## Generic data generation
+l_f <- 1e-5
+u_f <- 1e5
+h <- function(x){dnorm(mu,sigma)}
+abscissae <- as.abscissae(x=seq(l_f+0.01,u_f-0.01,length.out=4), h, l_h=l_f, u_h=u_f, ep=1e-8)
+}
+
+
+
+______________________________
+
+\name{bucket}
+\alias{ bucket}
+\title{Bucket Function.}
+\usage{bucket(x, x_i)}
+\description{
+    Group a given value x into pre-determined ranges defined by x_i, and return the index of which bucket x belongs to.
+  }
+\arguments{
+  \item{ x}{ A numeric value to be tested and sorted into a bucket}
+  \item{ x_i}{ A vector of values representing starting points of the various buckets}  
+}
+\details{
+   Bucket is used to assign the given x to its associated group or range of values.  This is done by utilizing a logical statement to determine if x is greater than or less than each element of x_i.  The index of the proper bucket is then returned as output.
+}
+\value{
+   The bucket function returns the index of the bucket in which the user-input x belongs.  
+}
+\references{ W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2(1992), pp. 337-348.}
+\examples{
+   myBuckets <- c(1, 3, 6, 9)
+   bucket(4, myBuckets)
+}
+
+
+
+______________________________
+
+\name{check.abscissae}
+\alias{check.abscissae }
+\title{Generation of Initial X Values for ARS.}
+\usage{check.abscissae(x, bound, ep)}
+\description{
+   The check.abscissae function takes two or more user-input points  as well as upper and lower bounds and adjusts the points to create effective initial x values for the adaptive rejection sampling algorithm.  
+  }
+\arguments{
+  \item{ x}{ a vector of at least two x values within the lower and upper bounds (in ascending order)}
+  \item{bound}{ A vector of (lower bound, upper bound)}  
+  \item{ ep}{ The differential between each point of x and its next evaluation for estimation of the derivative}
+}
+\details{
+   The inputs passed through check.abscissae go through a series of checks to ensure that the points are valid starting x values for the adaptive rejection sampling algorithm.  Error messages are returned if the length of x is less than two or if any elements of x are not unique.  A warning is returned if the user inputs a lower bound that is larger than the upper bound.  The next check returns an error if the provided x values are not within the listed bounds.  The values of x must have mass in f or else the algorithm will be unable to proceed because h=log(f) will not be finite.  If this is not the case, those values will be discarded; a warning will be returned if values are discarded until there are less than two points (as this fails the first check mentioned.)  Final checks are performed to ensure that there are x values on either side of the global optimum.   Warnings lead to automated changes to the user inputs, and errors break the function and prompt the user to input different parameters.   After all conditions are met, check.abscissae returns the finalized x values (T_k), the corresponding h(x) and h'(x) values, the length of the x vector (k), and the upper and lower bounds.  
+}
+\value{
+   The returned value of check.abscissae is a list of the x values and the associated evaluations of the function h and the derivative of h.  The list also includes summary outputs for k, lower bound and upper bound.  This list of components can then be used as a single summary object as an input to future functions in the adaptive rejection sampling algorithm.
+   \item{T_k}{validated starting x values}
+   \item{h_T}{h(x) evaluations at the values in T_k}
+   \item{hp_T}{h'(x) evaluations}
+   \item{z_i}{NULL (to be filled by another function)}
+   \item{l_h}{lower bound of h(x) input by user}
+   \item{u_h}{upper bound of h(x) input by user}
+}
+\references{ W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2(1992), pp. 337-348.}
+\examples{
+ f <- function(x) { dnorm(x, 5, 2.5) }
+	h <- function(x) { log(f(x)) }
+	x <- c(-10, 1, 4, 8)
+	check.abscissae(x=x, h=h, l_h=-12, u_h=10, ep=1e-3)
+}
+
+
+
+__________________________________
+
+\name{deriv_num}
+\alias{deriv_num}
+\title{Numeric Differentiation of Functions or Expressions.}
+\usage{ deriv_num(fun, x, h=1e-5)}
+\description{
+  Compute numeric derivatives of functions evaluated at specified values. The formula used for this calculation is as follows, [(f(x)+h)-f(x)]/h, where h is some small number.
+}
+\arguments{
+  \item{fun}{A call of expression with no LHS representing a density}
+  \item{x}{ A vector representing a point at which the derivative will be evaluated}  
+  \item{h}{ Small scalar value to act as the interval length to compute the numeric differentiation}
+}
+\details{
+  deriv_num is a function used to compute derivatives at given points by estimating the secant lines over very small intervals.  It outputs a numeric value.   The magnitude of h can be changed by the user, but is set to a default of 1E-5.  
+}
+\value{
+   deriv_num returns a numeric value and therefore is helpful in situations where derivative computations are only needed at some coordinates.
+}
+\references{ W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2(1992), pp. 337-348.}
+\examples{
+## Normal Distribution
+mu <- 5
+sigma <- 2
+f <- function(x) {dnorm(x,mu,sigma)}
+der <- deriv_num(f, 4.5)
+## User Defined Function
+f <- function(x) { quote(1/(sigma*sqrt(2*pi)) * exp(-(x-mu)^2/(2*sigma^2))) } 
+der <- deriv_num(f, 4.5, 1e-3)
+}
+
+
+
+__________________________________
+
+\name{get_zi}
+\alias{ get_zi}
+\title{Compute Intersection Points of Derivatives.}
+\usage{ get_zi(x)}
+\description{
+   This function calculates the x values of intersecting points of the function derivative at specified points.  
+}
+\arguments{
+  \item{ x}{ A list of X values, function evaluations and derivative evaluations at those points}
+}
+\details{
+   The get_zi function uses these inputs to generate intersection points using the following formula:
+( h_T[-1] - h_T[-k] - T_k[-1] * hp_T[-1] + T_k[-k] * hp_T[-k] ) / (hp_T[-k]-hp_T[-1])
+}
+\value{
+   The lower bound, z values and upper bound are returned from the get_zi function.  Additionally, the z_i values are input to the summary information provided by the \code{\link{create_abscissae}} function.
+}
+\references{ W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2(1992), pp. 337-348.}
+\examples{
+testInput <- list(T_k=c(-10,1,4,8), h_T=c(-19, -3, -2, -2.5), hp_T=c(2, 0.5, 0.1, -0.5), z_i=NULL, k=4, l_h=-12, u_h=10)
+get_zi.abscissae(testInput)
+
+
+___________________________________
+
+\name{int_s}
+\alias{int_s}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+Integral of exponentiated upper hull function
+}
+\description{
+\eqn{int_s} is to exponentiate each piece of the upper hull and then integrate them to normalize \eqn{s}. 
+}
+\usage{
+\eqn{int_s(T_k, h_T, hp_T, z_i)}
+}
+\arguments{
+   \item{T_k}{An ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment.}
+   \item{h_T}{A vector of values of the log of the objective function at values of \eqn{T_k}.}
+  \item{hp_T}{A vector of the first derivative of the log of the objective function at values in \eqn{T_k}.}
+  \item{z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}}
+\details{
+First calculate the piecewise linear functions from \code{\link{u}} function and integrate them with the corresponding boundary. Each piece of the integral is \eqn{latex}{1/h'(x_j)*exp(u(z_{j+1}-u(z_j)))}. \eqn{int_s} will be the sum of all these pieces of integral and serve as a normalizing component for the sampling density .  
+
+}
+\value{
+A value that is the integral of the exponentiated upper hull function.
+}
+\references{
+W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2 (1992), pp. 337-348.
+}
+
+\examples{
+T_k<-c(-3,-1,1,3)
+h_T<-log(dnorm(T_k))
+hp<-function(x){-x}
+hp_T<-hp(T_k)
+z_i<-c(-Inf,-2, 0, 2,Inf)
+int_s(T_k, h_T, hp_T, z_i)
+}
+
+
+
+____________________________________
+
+\name{l}
+\alias{l}
+\title{
+calculate the squeezing function
+}
+\description{
+\eqn{l} is a squeezing function that gets updated with each iteration of the adaptive rejection sampling algorithm. The squeezing function is a piecewise linear lower hull.
+}
+\usage{
+\eqn{l( x , T_k , h_T )}
+}
+\arguments{
+  \item{x}{A vector of values to act as the argument for l.}
+  \item{T_k}{An ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment.}
+  \item{h_T}{A vector of values of the log of the objective function at values of \eqn{T_k}.}
+  }
+\details{
+We constructed a linear lower hull by connecting piecewise lines based on every pair of adjacent points in \eqn{T_k}. Each one of the piecewise lines fits two points \eqn{latex}{(x_j, h_T(x_j))} and \eqn{(x_{j+1}, h_T(x_{j+1}))}.  For every pair of the adjacent points \eqn{(x_{j+1}, x_j)} in \eqn{T_k}, the returned value for one x from the squeezing function is \deqn{latex}{\frac{(x_{j+1}-x)h(x_j)+(x-x_j)h(x_{j+1})}{(x_{j+1}-x_j)}}. x is a value between \eqn{x_j} and \eqn{x_{j+1}} and thus it determines Which piece of the lower hull function and which pair of points (x_{j+1}, x_j) to use. If the input x is a vector of many x values, then l function returns a vector of corresponding y values based on the linear lower hull.
+}
+\value{
+\eqn{l} returns a vector of values calculated from the squeezing function corresponding to x.
+}
+\references{
+W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2(1992), pp. 337-348.
+}
+
+\examples{
+T_k<-c(0,3,5,6,10)
+h_T<-log(dnorm(T_k))
+x<-c(-1,2)
+l(x=x,T_k=T_k,h_T=h_T)
+}
+
+
+
+_____________________________________
+
+\name{permdiff}
+\alias{permdiff}
+
+\title{
+Permutation Test (Non-Parametric Test)
+}
+\description{
+Shows the difference between the ARS sample distribution and the theoretical distribution to evaluate accuracy of the implemented ARS algorithm.
+}
+\usage{
+permdiff(x, y, B)
+}
+
+\arguments{
+  \item{x}{Sample 1}
+  \item{y}{Sample 2}
+  \item{B}{Number of simulations to be tested}
+}
+\details{
+The permutation test function interchanges points of x and y distributions B times and keeps track of the difference of means of each permutation.  P values are then output, which are the number of simulated differences greater than the true difference in means between x and y.  Small p values imply that distribution x and distribution y are not the same.
+}
+\examples{
+x <- rnorm(30)
+y <- runif(30, min=-1, max=1)
+permdiff(x=x, y=y, 100)
+}
+
+
+
+_______________________________________
+
+\name{plot.abscissae}
+\alias{plot.abscissae}
+\title{
+Plot upper and lower function and sampling PDF and CDF 
+}
+\description{
+Plot upper and lower function with finite points in abscissae set and also one plot for sampling PDF from \code{\link{s}} function and sampling CDF for \code{\link{S}} 
+}
+\usage{
+plot.abscissae(abscissae, plot.h=F)
+}
+
+\arguments{
+  \item{abscissae$h}{
+log of objective function that we need to sample. "abscissae" is a list of ( h, T_k, h_T, hp_T, z_i) and its class is "abscissae".
+}
+  \item{abscissae$T_k}{an ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment. }
+  \item{abscissae$h_T}{a vector of values of the log of the objective function at values of \eqn{T_k}.}
+  \item{abscissae$hp_T}{a vector of the first derivative of the log of the objective function at values in \eqn{T_k}.}
+  \item{abscissae$z_i}{a vector of values that give the domain for each piecewise segment of the upper hull.}
+    \item{plot.h}{ an argument for users to input whether they want to plot the objective function f that they want to sample.}
+}
+\details{
+It plots lower hull (\code{\link{l}} function), upper hull (\code{\link{u}} function) for the log of objective function and also the sampling pdf (\code{\link{s}} function) and sampling CDF (\code{\link{S}} function). 
+}
+
+\seealso{
+See help files for \code{\link{l}} and \code{\link{u}}.  These functions are embedded within plot.abscissae.
+}
+\examples{
+l_f<-100
+u_f <- 100
+eps <- 0.1
+T_k<-c(-3,-1,1,3)
+h_T<-log(dnorm(T_k))
+hp<-function(x){-x}
+hp_T<-hp(T_k)
+z_i<-c(-Inf,-2, 0, 2,Inf)
+abscissae <- list(T_k=T_k, h_T=h_T, hp_T=hp_T, z_i=z_i)
+class(abscissae) <- "abscissae"
+plot.abscissae(abscissae, plot.h=F)  #plot.abscissae depends on functions l() and u().  For help on these see help files.
+}
+
+
+
+_____________________________________
+
+\name{s}
+\alias{s}
+
+\title{
+Normalized exponentiated envelope function.
+}
+\description{
+\eqn{s} is the sampling PDF found by exponentiating of the envelope function calculated from \eqn{u} and normalizing it using \eqn{int_s}.
+}
+\usage{
+\eqn{s(x , T_k, h_T , hp_T , z_i)}
+}
+
+\arguments{
+  \item{x}{
+A vector of values to determine the density of \eqn{s} at.
+}
+  \item{T_k}{An ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment.}
+  \item{h_T}{A vector of values of the log of the objective function at values of \eqn{T_k}.}
+  \item{hp_T}{A vector of the first derivative of the log of the objective function at values in \eqn{T_k}.}
+  \item{z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}}
+}
+\details{
+First exponentiate the upper function calculated from \code{\link{u}}. To make it a density, it is normalized by dividing by \eqn{int_s}.  
+}
+\value{
+A vector of density values of the normalized exponentiated envelope function for values of x.
+}
+\references{
+W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2 (1992), pp. 337-348.
+}
+
+\examples{
+T_k<-c(-3,-1,1,3)
+h_T<-log(dnorm(T_k))
+hp<-function(x){-x}
+hp_T<-hp(T_k)
+z_i<-c(-Inf,-2, 0, 2,Inf)
+x<-c(-1,3)
+s( x=x , T_k=T_k , h_T=h_T , hp_T=hp_T , z_i=z_i )
+}
+
+
+
+______________________________
+
+\name{S}
+\alias{S}
+
+\title{
+Cumulative density function of normalized exponentiated upper hull function
+}
+\description{
+\eqn{S} evaluates the CDF of the exponentiated upper hull function calculated from \eqn{u} at values of x.
+}
+\usage{
+\eqn{S(x , T_k, h_T , hp_T , z_i)}
+}
+
+\arguments{
+  \item{x}{
+A vector of values where the CDF is evaluated.
+}
+  \item{T_k}{An ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment.}
+  \item{h_T}{A vector of values of the log of the objective function at values of \eqn{T_k}.}
+  \item{hp_T}{A vector of the first derivative of the log of the objective function at values in \eqn{T_k}.}
+  \item{z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}}
+}
+\details{
+\eqn{S} evaluates the cumulative density of the exponentiated upper hull function. First, determine which segment of the exponentiated envelope function x falls into, say the j-th. Add the integral on all the (j-1) segments before the j-th segment. Then integrate the j-th piece of the function over the interval \eqn{[z_{j-1}, x]} and add it to the preceding integral to get the CDF of the exponentiated envelope function at x.  
+}
+\value{
+A vector of  values of the CDF of the exponentiated envelope function for the corresponding x values.
+}
+\references{
+W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2 (1992), pp. 337-348.
+}
+
+\examples{
+T_k<-c(-3,-1,1,3)
+h_T<-log(dnorm(T_k))
+hp<-function(x){-x}
+hp_T<-hp(T_k)
+z_i<-c(-Inf,-2, 0, 2,Inf)
+x<-c(-1,3)
+S(x , T_k, h_T , hp_T , z_i)
+}
+
+
+
+___________________________
+
+\name{S_inv}
+\alias{S_inv}
+
+\title{
+Inverse of the Cumulative Distribution of the exponentiated envelope function
+}
+\description{
+Given a vector of values between 0 and 1, \eqn{S_inv} will give a sample that come from the sampling distribution \eqn{S}.
+}
+\usage{
+\eqn{S_inv(x , T_k, h_T , hp_T , z_i)} 
+}
+
+\arguments{
+  \item{x}{
+A vector of values between 0 and 1.
+}
+  \item{abscissae$T_k}{An ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment. "abscissae" is a list of ( T_k, h_T, hp_T, z_i) and its class is "abscissae".}
+   \item{abscissae$h_T}{A vector of values of the log of the objective function at values of \eqn{T_k}.}
+ \item{abscissae$hp_T}{A vector of the first derivative of the log of the objective function at values in \eqn{T_k}.}
+  \item{abscissae$z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}
+}
+\details{
+\eqn{S_{inv}} is the inverse of \code{\link(S)}. The function has particular form of exponential of piecewise linear function. Given a value between 0 and 1, it can be determined which piece of the exponentiated envelope function to use by \code{\link{bucket}} (denoted by j). After subtracting the cumulative density over the preceding (j-1) spaces, apply the remainder to the corresponding piece of inverse function and then obtain the data point for the X variable.  
+}
+\value{
+A vector of points whose CDF is \eqn{S}.
+}
+\references{
+W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2 (1992), pp. 337-348.
+}
+
+\examples{
+T_k<-c(-3,-1,1,3)
+h_T<-log(dnorm(T_k))
+hp<-function(x){-x}
+hp_T<-hp(T_k)
+z_i<-c(-Inf,-2, 0, 2,Inf)
+abscissae <- list(T_k=T_k, h_T=h_T, hp_T=hp_T, z_i=z_i)
+class(abscissae) <- "abscissae"
+x<-c(0.5,0.95)
+S_inv(x , abscissae)
+}
+
+
+
+______________________________
+
+\name{test}
+\alias{test}
+
+\title{
+Testing Function
+}
+\description{
+Samples from two distributions (generally one heuristically found and the other theoretical.)  Summary statistics are returned comparing the two.
+}
+\usage{
+test(B, f, init_val, l_f, u_f, rdensity, ddensity, ep = 1e-3, leg="Density", ...)
+}
+
+\arguments{
+  \item{B}{number of sampled points from each of the distributions}
+  \item{f}{function to generate sample from (the 'unknown')}
+  \item{init_val}{initial points for the ARS algorithm}
+  \item{l_f}{lower bound for ARS}
+  \item{u_f}{upper bound for ARS}
+  \item{rdensity}{R function for distribution sampling (i.e. rnorm)}
+  \item{ddensity}{R function for distribution density (i.e. dnorm)}
+  \item{ep}{small value used for calculating numeric derivatives}
+  \item{leg}{legend for plot}
+  \item{...}{to be used for parameters to be passed into rdensity and ddensity}
+}
+\details{
+Samples are drawn from the two input distributions.  Means of each distribution are determined, and then the \code{\link{permdiff}} function is called to calculate p values. A histogram is plotted of the 'unknown' distribution, and that plot is overlaid with the theoretical distribution's curve.  
+}
+\value{
+Test returns a list of summary statistics including:
+  \item{samp_ars}{the points sampled from the ARS distribution}
+  \item{samp_theo}{the poinds sampled from the theoretical distribution (ddensity)}
+  \item{mean}{a 2-element vector giving the means of both distributions}
+  \item{p}{the p value returned by the permdiff function}
+}
+
+\seealso{
+\code{\link{permdiff}}
+}
+\examples{
+require('VGAM')
+
+B<-1000
+
+  # Normal distribution
+  mu <- 5
+  sigma <- 2
+  test_Normal <- test(
+      B,
+      f=expression( (2*pi*sigma^2)^(-1/2) * exp(-(x-mu)^2/(2*sigma^2)) ),
+      #f=function(x) {dnorm(x,mu,sigma)},
+      init_val=c(-10, 3, 4, 6, 15),
+      l_f=-Inf,
+      u_f=Inf,
+      rdensity=rnorm,
+      ddensity=dnorm,
+      mean = mu, sd = sigma,
+      leg = "Normal"
+  )
+
+
+  # Beta distribution
+  a <- 5
+  b <- 2
+  test_B <- test(
+      B,
+      f=function(x) {dbeta(x,a,b)},
+      init_val=c(.4, .6, .9),
+      l_f=0,
+      u_f=1,
+      rbeta,
+      dbeta,
+      shape1 = a,
+      shape2 = b,
+      ep = ep,
+      leg = "Beta"
+    )
+
+  # Gamma distribution
+  r=15
+  lambda=1
+  init_val <- 
+  test_Gm <- test(
+    B,
+    f=function(x) {dgamma(x,r,lambda)},
+    init_val=c(5, 10, 15, 20, 25, 40),
+    l_f=0,
+    u_f=Inf,
+    rgamma,
+    dgamma,
+    shape = r,
+    rate = lambda,
+    leg = "Gamma"
+  )
+
+if(T) {
+  # Chi-Square distribution
+  d_f <- 10
+  f <- function(x) { dchisq(x, d_f) }
+  l_f = 0
+  u_f = Inf
+  init_val <- c(3, 5, 10, 15, 20, 25)
+  test_Ch <- test(B, f, init_val, l_f, u_f, rchisq, dchisq, df = d_f, leg = "Chi-Square")
+  test_Ch$Means
+  test_Ch$`p-value`
+}
+if(T) {
+  # Exponential distribution
+  lambda <- .1
+  f <- function(x) { dexp(x, lambda)}
+  l_f = 0
+  u_f = Inf
+  init_val <- c(1.5, 2, 2.5, 3, 10, 20, 40)
+  test_E <- test(B, f, init_val, l_f, u_f, rexp, dexp, rate = lambda, leg = "Exponential")
+  test_E$Means
+  test_E$`p-value`
+  #x's must be fairly close to the mean of this distribution
+  #to get reasonable results. 
+}
+if(T) {
+  # t distribution
+  d_f <- 20
+  f <- function(x) { dt(x, d_f)}
+  l_f = -Inf
+  u_f = Inf
+  init_val <- c(-10, -5, 0.75, 1, 1.5, 3, 5, 7, 10)
+  test_T <- test(B, f, init_val, l_f, u_f, rt, dt, df = d_f, leg = "Student t")
+  test_T$Means
+  test_T$`p-value`
+  #The degrees of freedom must be larger than the absolute value 
+  #of the maximum and minimum of the x's.
+}
+if(T){
+  # Gumbel distribution
+  mu <- 10
+  b <- 5
+  f <- function(x){ dgumbel(x, mu, b)}
+  l_f <- -Inf
+  u_f <- Inf
+  init_val <- c(0, 7, 10, 11, 12, 15, 30)
+  test_G <- test(B, f, init_val, l_f, u_f, rgumbel, dgumbel, location = mu, scale = b, leg = "Gumbel")
+  test_G$Means
+  test_G$`p-value`
+}
+if(T){
+  # Weibull distribution
+  a <- 5
+  b <- 5
+  f <- function(x){ dweibull(x, a, b)}
+  l_f <- 0
+  u_f <- Inf
+  init_val <- c(1, 3.5, 4.2, 4.5, 4.8, 6, 10)
+  test_W <- test(B, f, init_val, l_f, u_f, rweibull, dweibull, shape = a, scale = b, leg = "Weibull")
+  test_W$Means
+  test_W$`p-value`
+  #x values must be centered around mean with a somewhat wide 
+  #spread to get a somewhat accurate mean.
+}
+if(T){
+  # Pareto distribution
+  a <- 1
+  b <- 3
+  f <- function(x){ dpareto(x, a, b)}
+  l_f <- 1.0001
+  u_f <- Inf
+  init_val <- c(1.1, 1.2, 1.3, 1.5, 1.9, 2.5)
+  test_P <- test(B, f, init_val, l_f, u_f, rpareto, dpareto, location = a, shape = b, leg = "Pareto")
+  test_P$Means
+  test_P$`p-value`
+}
+if(T){
+  # F distribution
+  df1 <- 3
+  df2 <- 5
+  f <- function(x){ df(x, df1, df2)}
+  l_f <- 0
+  u_f <- 50
+  init_val <- c(0.01, 0.2, 0.3, 0.5, 0.6, 5, 20, 30, 40)
+  test_F <- test(B, f, init_val, l_f, u_f, rf, ddensity = df, df1 = df1, df2 = df2, leg = "F")
+  test_F$Means
+  test_F$`p-value`
+}
+if(T){
+  # 1/(x^5)
+  f <- function(x){ x^(-5)}
+  l_f <- 0.01
+  u_f <- Inf
+  init_val <- c(1.5, 2, 3)
+  test_poly <- ars(B, f,l_f, u_f, init_val)
+  mean(test_poly)
+  hist(test_poly, breaks = 75, main = "1/(x^5)")
+}
+if(T){
+  # sin(x)
+  a <- 100
+  f <- function(x){ a*sin(x)}
+  l_f <- pi/16
+  u_f <- 15*pi/16
+  init_val <- c(0.5, 0.9, 1.5, 2)
+  test_sin <- ars(B, f, l_f, u_f, init_val)
+  mean(test_sin)
+  hist(test_sin, breaks = 10, main = "sin(x)", col = "grey95")
+}
+
+}
+
+
+
+____________________________________
+
+
+\name{u}
+\alias{u}
+
+\title{
+Calculate the envelop function value
+}
+\description{
+u is an envelope function which updates through iterations of the adaptive rejection sampling algorithm. The envelope function is a piecewise linear upper hull to the log of the objective function input by the user.
+}
+\usage{
+\eqn{u( x , T_k , h_T , hp_T , z_i )}
+}
+\arguments{
+  \item{x}{A vector of values to act as the argument for u.}
+  \item{T_k}{An ordered vector of values on the support of the log of the objective function to calculate the slope of u in each piecewise segment.}
+  \item{h_T}{A vector of values of the log of the objective function at values of \eqn{T_k}.}
+  \item{hp_T}{A vector of the first derivative of the log of the objective function at values in \eqn{T_k}.}
+  \item{z_i}{A vector of values that give the domain for each piecewise segment of the upper hull.}
+  }
+\details{
+We constructed a linear upper hull for the  log of the objective function by connecting piecewise tangent lines based on each points in \eqn{T_k}. That is, each one of the piecewise lines is the tangent line at a point \eqn{x_j}, whose slope is h_T_j. The transition points of the tangent lines forms the ordered set \eqn{z_i}. If the value of x falls into the range of \eqn{(z_{j-1}, z_j)} in the \eqn{z_i} set, the returned value for x from the envelop function is \eqn{h(x_j)+(x-x_j)h'(x_j)=h_T_j+(x-x_j)hp_T_j}. The x should be a value between \eqn{z_{j-1}} and \eqn{z_j} and thus its value determines which piece of the upper hull function and which point \eqn{x_j} in \eqn{T_k} set to use. For those values larger than the last one, the last value \eqn{x_{length(z_i)}} is used as \eqn{x_j} in the corresponding piece of envelope function. 
+}
+\value{
+A vector of values of the envelope function evaluated at values of x. 
+}
+\references{
+W. R. Gilks and P. Wild. Adaptive Rejection Sampling for Gibbs Sampling. Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 41, No. 2 (1992), pp. 337-348.
+}
+
+\examples{
+T_k<-c(-3,-1,1,3)
+h_T<-log(dnorm(T_k))
+hp<-function(x){-x}
+hp_T<-hp(T_k)
+z_i<-c(-Inf,-2, 0, 2,Inf)
+x<-c(-1,3)
+u( x=x , T_k=T_k , h_T=h_T , hp_T=hp_T , z_i=z_i )
+}
+
+
+

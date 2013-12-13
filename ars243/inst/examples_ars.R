@@ -1,14 +1,3 @@
-rm(list=ls())
-
-script.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/Project-stat243/ars243/R/"
-out.dir <- "/Users/Chris/Documents/26 UC Berkeley/03 Courses/STAT 243/Final Project/"
-
-setwd(script.dir)
-source("auxiliar_fun.R")
-source("abscissae_class.R")
-source("abscissae_methods.R")
-source("ars.R")
-setwd(out.dir)
 
 #####     EXAMPLES WITH DISTRIBUTIONS     #####
 
